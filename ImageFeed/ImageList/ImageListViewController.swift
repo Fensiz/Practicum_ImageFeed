@@ -9,9 +9,14 @@ import UIKit
 
 final class ImageListViewController: UIViewController {
 
+	// MARK: - IB Outlets
+
 	@IBOutlet weak private var tableView: UITableView!
 
-	private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+	// MARK: - Private Properties
+
+	private var photos: [(name: String, isLiked: Bool)] = Array(0..<20).map{ ("\($0)", $0 % 2 == 0) }
+	private let currentDate = Date()
 	private lazy var dateFormatter: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateStyle = .long
@@ -19,28 +24,35 @@ final class ImageListViewController: UIViewController {
 		return formatter
 	}()
 
+	// MARK: - Overrides Methods
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		tableView.delegate = self
 		tableView.dataSource = self
-		tableView.rowHeight = 200
 		tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
 	}
 }
 
 extension ImageListViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		photosName.count
+		photos.count
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: ImageListCell.reuseIdentifier, for: indexPath)
-		
-		guard let imageListCell = cell as? ImageListCell else {
+		guard let imageListCell = tableView.dequeueReusableCell(
+			withIdentifier: ImageListCell.reuseIdentifier,
+			for: indexPath
+		) as? ImageListCell else {
 			return UITableViewCell()
 		}
 
-		configCell(for: imageListCell, row: indexPath.row)
+		imageListCell.config(
+			with: UIImage(named: photos[indexPath.row].name),
+			dateText: dateFormatter.string(from: currentDate),
+			isLiked: photos[indexPath.row].isLiked
+		)
+		imageListCell.delegate = self
 
 		return imageListCell
 	}
@@ -48,7 +60,7 @@ extension ImageListViewController: UITableViewDataSource {
 
 extension ImageListViewController: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		guard let image = UIImage(named: photosName[indexPath.row]) else {
+		guard let image = UIImage(named: photos[indexPath.row].name) else {
 			return 0
 		}
 
@@ -61,10 +73,11 @@ extension ImageListViewController: UITableViewDelegate {
 	}
 }
 
-extension ImageListViewController {
-	private func configCell(for cell: ImageListCell, row: Int) {
-		cell.cellImage.image = UIImage(named: "\(photosName[row])")
-		cell.dateLabel.text = dateFormatter.string(from: Date())
-		cell.isLiked = row % 2 == 0
+extension ImageListViewController: ImageListCellDelegate {
+	func didTapLikeButton(on cell: ImageListCell) {
+		if let indexPath = tableView.indexPath(for: cell) {
+			photos[indexPath.row].isLiked.toggle()
+			tableView.reloadRows(at: [indexPath], with: .automatic)
+		}
 	}
 }

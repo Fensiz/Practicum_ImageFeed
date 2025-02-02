@@ -9,19 +9,39 @@ import UIKit
 
 final class ImageListCell: UITableViewCell {
 
+	// MARK: - Static Properties
+
 	static let reuseIdentifier = "ImageListCell"
 
-	@IBOutlet weak var dateLabel: UILabel!
-	@IBOutlet weak var likeButton: UIButton!
-	@IBOutlet weak var cellImage: UIImageView!
+	// MARK: - IB Outlets
 
-	@IBAction func likeButtonAction(_ sender: UIButton) {
-		isLiked.toggle()
-	}
-	
-	var isLiked: Bool = false {
+	@IBOutlet weak private var dateLabel: UILabel!
+	@IBOutlet weak private var likeButton: UIButton!
+	@IBOutlet weak private var cellImage: UIImageView!
+
+	// MARK: - Public Properties
+
+	weak var delegate: ImageListCellDelegate?
+
+	// MARK: - Private Properties
+
+	private var isLiked: Bool = false {
 		didSet {
-			likeButton.tintColor = isLiked ? .ypRed : .ypWhite50
+			likeButton.tintColor = isLiked ? .ypWhite50 : .ypRed
 		}
+	}
+
+	// MARK: - IB Actions
+
+	@IBAction private func likeButtonTapped() {
+		delegate?.didTapLikeButton(on: self)
+	}
+
+	// MARK: - Public Methods
+
+	func config(with image: UIImage?, dateText: String, isLiked: Bool) {
+		cellImage.image = image
+		dateLabel.text = dateText
+		self.isLiked = isLiked
 	}
 }

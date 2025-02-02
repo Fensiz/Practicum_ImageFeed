@@ -212,10 +212,10 @@
             </objects>
             <point key="canvasLocation" x="57.971014492753625" y="-28.125"/>
         </scene>
-        <!--View Controller-->
+        <!--Single Image View Controller-->
         <scene sceneID="VbQ-Cp-MeW">
             <objects>
-                <viewController id="Xbb-eH-YbT" sceneMemberID="viewController">
+                <viewController id="Xbb-eH-YbT" customClass="SingleImageViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="bY9-fv-rjU">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -234,6 +234,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="v31-u4-ZEH"/>
+                    <connections>
+                        <outlet property="imageView" destination="c4e-AN-a6f" id="KSc-ny-VGF"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FVb-Fp-bpo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

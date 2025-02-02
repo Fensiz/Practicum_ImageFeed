@@ -15,6 +15,7 @@ final class ImageListViewController: UIViewController {
 
 	// MARK: - Private Properties
 
+	private let showSingleImageSegueIdentifier = "ShowSingleImage"
 	private var photos: [(name: String, isLiked: Bool)] = Array(0..<20).map{ ("\($0)", $0 % 2 == 0) }
 	private let currentDate = Date()
 	private lazy var dateFormatter: DateFormatter = {
@@ -31,6 +32,23 @@ final class ImageListViewController: UIViewController {
 		tableView.delegate = self
 		tableView.dataSource = self
 		tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+	}
+
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if segue.identifier == showSingleImageSegueIdentifier {
+			guard
+				let viewController = segue.destination as? SingleImageViewController,
+				let indexPath = sender as? IndexPath
+			else {
+				assertionFailure("Invalid segue destination")
+				return
+			}
+
+			let image = UIImage(named: photos[indexPath.row].name)
+			viewController.image = image
+		} else {
+			super.prepare(for: segue, sender: sender)
+		}
 	}
 }
 

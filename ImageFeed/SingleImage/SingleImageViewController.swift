@@ -11,7 +11,7 @@ final class SingleImageViewController: UIViewController {
 
 	// MARK: - IB Outlets
 
-	@IBOutlet weak var scrollView: UIScrollView!
+	@IBOutlet weak private var scrollView: UIScrollView!
 	@IBOutlet private var imageView: UIImageView!
 
 	// MARK: - Public Properties
@@ -39,7 +39,7 @@ final class SingleImageViewController: UIViewController {
 
 	// MARK: - Private Methods
 	
-	@IBAction func shareButtonAction(_ sender: UIButton) {
+	@IBAction private func shareButtonAction(_ sender: UIButton) {
 		guard let image else { return }
 		let activityVC = UIActivityViewController(activityItems: [image], applicationActivities: nil)
 		present(activityVC, animated: true, completion: nil)

@@ -22,8 +22,8 @@
                         <color key="selectedImageTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="b5n-kp-H2U" kind="relationship" relationship="viewControllers" id="tas-wy-mNu"/>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="hbI-gz-gPS"/>
+                        <segue destination="b5n-kp-H2U" kind="relationship" relationship="viewControllers" id="tas-wy-mNu"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wnm-UL-ZlT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -219,7 +219,7 @@
                                     <outlet property="delegate" destination="Xbb-eH-YbT" id="aKa-id-Sg1"/>
                                 </connections>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2fI-VH-jZF">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2fI-VH-jZF" userLabel="Back Button">
                                 <rect key="frame" x="8" y="8" width="44" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="44" id="DPa-n3-M6I"/>
@@ -231,12 +231,22 @@
                                     <action selector="didTapBackButton" destination="Xbb-eH-YbT" eventType="touchUpInside" id="wpD-OK-e6p"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cgw-Fv-eS7" userLabel="Share Button">
+                                <rect key="frame" x="194.66666666666666" y="889" width="51" height="51"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="share"/>
+                                <connections>
+                                    <action selector="shareButtonAction:" destination="Xbb-eH-YbT" eventType="touchUpInside" id="4gf-Rq-oTl"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="a2t-Mh-fbY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
+                            <constraint firstItem="cgw-Fv-eS7" firstAttribute="centerX" secondItem="bY9-fv-rjU" secondAttribute="centerX" id="2bA-qi-kk8"/>
                             <constraint firstItem="2fI-VH-jZF" firstAttribute="leading" secondItem="a2t-Mh-fbY" secondAttribute="leading" constant="8" id="8AL-Uo-NNq"/>
                             <constraint firstItem="owQ-77-Q06" firstAttribute="leading" secondItem="bY9-fv-rjU" secondAttribute="leading" id="VFB-DF-aYJ"/>
+                            <constraint firstItem="a2t-Mh-fbY" firstAttribute="bottom" secondItem="cgw-Fv-eS7" secondAttribute="bottom" constant="16" id="crD-E4-nHa"/>
                             <constraint firstItem="owQ-77-Q06" firstAttribute="top" secondItem="bY9-fv-rjU" secondAttribute="top" id="j7X-Cm-VZd"/>
                             <constraint firstAttribute="trailing" secondItem="owQ-77-Q06" secondAttribute="trailing" id="sUf-tu-ScU"/>
                             <constraint firstAttribute="bottom" secondItem="owQ-77-Q06" secondAttribute="bottom" id="tpi-WC-agS"/>
@@ -251,7 +261,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FVb-Fp-bpo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="915.94202898550736" y="-28.125"/>
+            <point key="canvasLocation" x="915.00000000000011" y="-28.242677824267783"/>
         </scene>
     </scenes>
     <resources>
@@ -261,6 +271,7 @@
         <image name="exit" width="20" height="22"/>
         <image name="heart.fill" catalog="system" width="128" height="107"/>
         <image name="profile.active" width="30" height="30"/>
+        <image name="share" width="51" height="51"/>
         <image name="stack.active" width="21" height="22"/>
         <namedColor name="YP Black">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

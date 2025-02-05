@@ -12,7 +12,7 @@ final class SingleImageViewController: UIViewController {
 	// MARK: - IB Outlets
 
 	@IBOutlet weak private var scrollView: UIScrollView!
-	@IBOutlet private var imageView: UIImageView!
+	@IBOutlet weak private var imageView: UIImageView!
 
 	// MARK: - Public Properties
 
@@ -51,8 +51,8 @@ final class SingleImageViewController: UIViewController {
 		view.layoutIfNeeded()
 		let visibleRectSize = scrollView.bounds.size
 		let imageSize = image.size
-		let hScale = visibleRectSize.width / imageSize.width
-		let vScale = visibleRectSize.height / imageSize.height
+		let hScale = (imageSize.width > 0) ? visibleRectSize.width / imageSize.width : 0
+		let vScale = (imageSize.height > 0) ? visibleRectSize.height / imageSize.height : 0
 		let scale = min(maxZoomScale, max(minZoomScale, min(hScale, vScale)))
 		scrollView.setZoomScale(scale, animated: false)
 		scrollView.layoutIfNeeded()

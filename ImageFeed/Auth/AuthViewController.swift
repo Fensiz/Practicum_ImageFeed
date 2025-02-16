@@ -10,9 +10,8 @@ import UIKit
 class AuthViewController: UIViewController {
 	private let showWebViewSegueIdentifier = "ShowWebView"
 
-	override func viewDidLoad() {
-		super.viewDidLoad()
-	}
+	private lazy var oauthService: OAuth2Service = OAuth2Service.shared
+	weak var delegate: AuthViewControllerDelegate?
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.identifier == showWebViewSegueIdentifier {
@@ -31,10 +30,26 @@ class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
 	func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-		//TODO: process code
+		print("code", code)
+		oauthService.fetchOAuthToken(code) { [weak self] result in
+			switch result {
+				case .success(let token):
+					guard let self else { return }
+					self.delegate?.didAuthenticate(self, with: token)
+				case .failure:
+					vc.dismiss(animated: true)
+					let alert = UIAlertController(
+						title: "Ошибка",
+						message: "Ошибка получения токена",
+						preferredStyle: .alert
+					)
+					alert.addAction(UIAlertAction(title: "OK", style: .default))
+					self?.present(alert, animated: true)
+			}
+		}
 	}
 
 	func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-		vc.dismiss(animated: true)
+		dismiss(animated: true)
 	}
 }

@@ -8,22 +8,40 @@
 import UIKit
 
 class AuthViewController: UIViewController {
-
+	private let showWebViewSegueIdentifier = "ShowWebView"
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+		configureBackButton()
     }
-    
 
-    /*
-    // MARK: - Navigation
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if segue.identifier == showWebViewSegueIdentifier {
+			guard
+				let webViewViewController = segue.destination as? WebViewViewController
+			else {
+				assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
+				return
+			}
+			webViewViewController.delegate = self
+		} else {
+			super.prepare(for: segue, sender: sender)
+		}
+	}
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+	private func configureBackButton() {
+		navigationController?.navigationBar.backIndicatorImage = UIImage(systemName: "chevron.backward")
+		navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(systemName: "chevron.backward")
+		navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+		navigationItem.backBarButtonItem?.tintColor = .ypBlack
+	}
+}
 
+extension AuthViewController: WebViewViewControllerDelegate {
+	func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+		//TODO: process code
+	}
+	
+	func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
+		vc.dismiss(animated: true)
+	}
 }

@@ -1,14 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="V93-FO-sxn">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fpk-7S-nJ2">
     <device id="retina6_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Web View View Controller-->
+        <scene sceneID="exC-ye-dFp">
+            <objects>
+                <viewController id="6Gt-Xn-6Iv" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="GM8-4a-ZhN">
+                        <rect key="frame" x="0.0" y="0.0" width="440" height="956"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1n4-6i-IIY">
+                                <rect key="frame" x="0.0" y="106" width="440" height="850"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <wkWebViewConfiguration key="configuration">
+                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                    <wkPreferences key="preferences"/>
+                                </wkWebViewConfiguration>
+                            </wkWebView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6sO-S0-5OD"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="1n4-6i-IIY" firstAttribute="top" secondItem="6sO-S0-5OD" secondAttribute="top" id="Ipg-Wz-tmr"/>
+                            <constraint firstItem="1n4-6i-IIY" firstAttribute="leading" secondItem="GM8-4a-ZhN" secondAttribute="leading" id="a1s-cI-fgN"/>
+                            <constraint firstItem="1n4-6i-IIY" firstAttribute="trailing" secondItem="GM8-4a-ZhN" secondAttribute="trailing" id="by5-FO-mlQ"/>
+                            <constraint firstItem="1n4-6i-IIY" firstAttribute="bottom" secondItem="GM8-4a-ZhN" secondAttribute="bottom" id="dg2-hL-xff"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="f2k-xu-vhZ"/>
+                    <connections>
+                        <outlet property="webView" destination="1n4-6i-IIY" id="ifZ-UQ-fpb"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jgu-gE-sQ7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1447" y="-481"/>
+        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="SDH-od-oLU">
             <objects>
@@ -235,6 +271,9 @@
                                         <integer key="value" value="16"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <segue destination="6Gt-Xn-6Iv" kind="show" identifier="ShowWebView" id="fDA-hy-qK7"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Kf5-8D-YtD"/>
@@ -251,7 +290,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="q1T-nP-EOj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1385.4545454545455" y="328.87029288702928"/>
+            <point key="canvasLocation" x="-2553" y="-481"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="YNb-uB-iGm">
@@ -269,7 +308,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="T7G-xD-Rqk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2277.2727272727275" y="328.87029288702928"/>
+            <point key="canvasLocation" x="-3616" y="-481"/>
         </scene>
     </scenes>
     <resources>
@@ -286,5 +325,8 @@
         <namedColor name="YP Red">
             <color red="0.96078431372549022" green="0.41960784313725491" blue="0.42352941176470588" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

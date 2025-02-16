@@ -19,31 +19,55 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1n4-6i-IIY">
-                                <rect key="frame" x="0.0" y="106" width="440" height="850"/>
+                                <rect key="frame" x="0.0" y="44" width="440" height="912"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <wkWebViewConfiguration key="configuration">
                                     <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
                                     <wkPreferences key="preferences"/>
                                 </wkWebViewConfiguration>
                             </wkWebView>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ebZ-h2-2Be">
+                                <rect key="frame" x="0.0" y="44" width="440" height="4"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" name="YP Black"/>
+                            </progressView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IgD-2l-sQT" userLabel="Back Button">
+                                <rect key="frame" x="0.0" y="0.0" width="44" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="44" id="gm0-Il-HWh"/>
+                                    <constraint firstAttribute="height" constant="44" id="jVb-Hu-Xnq"/>
+                                </constraints>
+                                <color key="tintColor" name="YP Black"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="chevron.backward" catalog="system"/>
+                                <connections>
+                                    <action selector="backButtonTapped:" destination="6Gt-Xn-6Iv" eventType="touchUpInside" id="zB2-yO-g1k"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6sO-S0-5OD"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="1n4-6i-IIY" firstAttribute="top" secondItem="6sO-S0-5OD" secondAttribute="top" id="Ipg-Wz-tmr"/>
+                            <constraint firstItem="IgD-2l-sQT" firstAttribute="top" secondItem="6sO-S0-5OD" secondAttribute="top" id="7Ta-TJ-OzN"/>
+                            <constraint firstItem="IgD-2l-sQT" firstAttribute="leading" secondItem="6sO-S0-5OD" secondAttribute="leading" id="7ZG-rl-mDz"/>
+                            <constraint firstItem="1n4-6i-IIY" firstAttribute="top" secondItem="IgD-2l-sQT" secondAttribute="bottom" id="Ipg-Wz-tmr"/>
                             <constraint firstItem="1n4-6i-IIY" firstAttribute="leading" secondItem="GM8-4a-ZhN" secondAttribute="leading" id="a1s-cI-fgN"/>
                             <constraint firstItem="1n4-6i-IIY" firstAttribute="trailing" secondItem="GM8-4a-ZhN" secondAttribute="trailing" id="by5-FO-mlQ"/>
                             <constraint firstItem="1n4-6i-IIY" firstAttribute="bottom" secondItem="GM8-4a-ZhN" secondAttribute="bottom" id="dg2-hL-xff"/>
+                            <constraint firstItem="ebZ-h2-2Be" firstAttribute="trailing" secondItem="GM8-4a-ZhN" secondAttribute="trailing" id="mp6-0W-WAG"/>
+                            <constraint firstItem="ebZ-h2-2Be" firstAttribute="leading" secondItem="GM8-4a-ZhN" secondAttribute="leading" id="t7A-YO-ETt"/>
+                            <constraint firstItem="ebZ-h2-2Be" firstAttribute="top" secondItem="IgD-2l-sQT" secondAttribute="bottom" id="xBN-X2-uii"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="f2k-xu-vhZ"/>
                     <connections>
+                        <outlet property="progressView" destination="ebZ-h2-2Be" id="Wuo-gU-iBc"/>
                         <outlet property="webView" destination="1n4-6i-IIY" id="ifZ-UQ-fpb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jgu-gE-sQ7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1447" y="-481"/>
+            <point key="canvasLocation" x="-1448.1818181818182" y="-481.38075313807531"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="SDH-od-oLU">
@@ -272,7 +296,7 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <segue destination="6Gt-Xn-6Iv" kind="show" identifier="ShowWebView" id="fDA-hy-qK7"/>
+                                    <segue destination="6Gt-Xn-6Iv" kind="presentation" identifier="ShowWebView" modalPresentationStyle="overFullScreen" id="fDA-hy-qK7"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -313,6 +337,7 @@
     </scenes>
     <resources>
         <image name="back" width="24" height="24"/>
+        <image name="chevron.backward" catalog="system" width="97" height="128"/>
         <image name="exampleImage" width="686" height="456"/>
         <image name="heart.fill" catalog="system" width="128" height="107"/>
         <image name="profile.active" width="30" height="30"/>

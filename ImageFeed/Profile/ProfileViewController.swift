@@ -113,9 +113,26 @@ final class ProfileViewController: UIViewController {
 		descriptionView.text = userDescription
 	}
 
+	private func switchToSplashScreenController() {
+		// Получаем экземпляр `window` приложения
+		guard let window = UIApplication.shared.windows.first else {
+			assertionFailure("Invalid window configuration")
+			return
+		}
+
+		// Создаём экземпляр нужного контроллера из Storyboard с помощью ранее заданного идентификатора
+		let splashScreenController = UIStoryboard(name: "Main", bundle: .main)
+			.instantiateViewController(withIdentifier: "SplashScreenViewController")
+
+		// Установим в `rootViewController` полученный контроллер
+		window.rootViewController = splashScreenController
+	}
+
 	// MARK: - Actions
 
 	@objc private func didTapLogoutButton() {
-		// LogoutAction
+		OAuth2TokenStorage.shared.token = nil
+		dismiss(animated: true)
+		switchToSplashScreenController()
 	}
 }

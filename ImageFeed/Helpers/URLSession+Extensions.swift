@@ -13,6 +13,7 @@ extension URLSession {
 		case urlRequestError(Error)
 		case urlSessionError
 	}
+	
 	func data(
 		for request: URLRequest,
 		completion: @escaping (Result<Data, NetworkError>) -> Void

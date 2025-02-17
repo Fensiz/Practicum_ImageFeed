@@ -8,11 +8,18 @@
 import UIKit
 
 class AuthViewController: UIViewController {
-	private let showWebViewSegueIdentifier = "ShowWebView"
 
-	private lazy var oauthService: OAuth2Service = OAuth2Service.shared
+	// MARK: - Public Properties
+
 	weak var delegate: AuthViewControllerDelegate?
-	
+
+	// MARK: - Private Properties
+
+	private let showWebViewSegueIdentifier = "ShowWebView"
+	private lazy var oauthService: OAuth2Service = OAuth2Service.shared
+
+	// MARK: - Overrides Methods
+
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.identifier == showWebViewSegueIdentifier {
 			guard
@@ -30,13 +37,13 @@ class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
 	func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-		print("code", code)
 		oauthService.fetchOAuthToken(code) { [weak self] result in
 			switch result {
 				case .success(let token):
 					guard let self else { return }
 					self.delegate?.didAuthenticate(self, with: token)
-				case .failure:
+				case .failure(let error):
+					print(error.localizedDescription)
 					vc.dismiss(animated: true)
 					let alert = UIAlertController(
 						title: "Ошибка",

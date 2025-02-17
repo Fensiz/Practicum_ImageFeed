@@ -6,13 +6,8 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		F4F7E1D62D62697100AB4D08 /* keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4F7E1D52D62697100AB4D08 /* keys.plist */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
 		F48DDC9A2D4223C700DB727F /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F4F7E1D52D62697100AB4D08 /* keys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = keys.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -50,7 +45,6 @@
 		F48DDC912D4223C700DB727F = {
 			isa = PBXGroup;
 			children = (
-				F4F7E1D52D62697100AB4D08 /* keys.plist */,
 				F48DDC9C2D4223C700DB727F /* ImageFeed */,
 				F48DDC9B2D4223C700DB727F /* Products */,
 			);
@@ -128,7 +122,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F4F7E1D62D62697100AB4D08 /* keys.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,13 +8,20 @@
 import UIKit
 
 class SplashScreenViewController: UIViewController {
+
+	// MARK: - Private Properties
+
 	private let authenticationScreenSegueId = "showAuthenticationScreenSegue"
 	private lazy var storageService = OAuth2TokenStorage.shared
+
+	// MARK: - Overrides Methods
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		navigateToNextScreen()
 	}
+
+	// MARK: - Private Methods
 
 	private func navigateToNextScreen() {
 		if let _ = storageService.token {

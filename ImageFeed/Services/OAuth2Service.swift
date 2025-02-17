@@ -8,14 +8,48 @@
 import Foundation
 
 final class OAuth2Service {
-	static let shared = OAuth2Service()
-	private init() {}
-	indirect enum OAuth2Error: Error {
+
+	enum OAuth2Error: Error {
 		case networkError(URLSession.NetworkError)
 		case decodeError
 	}
+
+	// MARK: - Static Properties
+
+	static let shared = OAuth2Service()
+
+	// MARK: - Initializers
+
+	private init() {}
+
+	// MARK: - Public Methods
+
+	func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, OAuth2Error>) -> Void) {
+		let request = makeOAuthTokenRequest(code: code)
+
+		URLSession.shared.data(for: request) { result in
+			switch result {
+				case .failure(let error):
+					completion(.failure(.networkError(error)))
+				case .success(let data):
+					let decoder = JSONDecoder()
+					decoder.keyDecodingStrategy = .convertFromSnakeCase
+					do {
+						let body = try decoder.decode(OAuthTokenResponseBody.self, from: data)
+						completion(.success(body.accessToken))
+					} catch {
+						completion(.failure(.decodeError))
+					}
+			}
+		}.resume()
+	}
+
+	// MARK: - Private Methods
+
 	private func makeOAuthTokenRequest(code: String) -> URLRequest {
-		let baseURL = URL(string: "https://unsplash.com")!
+		guard let baseURL = URL(string: "https://unsplash.com") else {
+			fatalError("Не удалось создать URL")
+		}
 
 		var urlComponents = URLComponents()
 		urlComponents.scheme = baseURL.scheme
@@ -37,25 +71,5 @@ final class OAuth2Service {
 		request.setHttpMethod(.post)
 
 		return request
-	}
-
-	func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, OAuth2Error>) -> Void) {
-		let request = makeOAuthTokenRequest(code: code)
-
-		URLSession.shared.data(for: request) { result in
-			switch result {
-				case .failure(let error):
-					completion(.failure(.networkError(error)))
-				case .success(let data):
-					let decoder = JSONDecoder()
-					decoder.keyDecodingStrategy = .convertFromSnakeCase
-					do {
-						let body = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-						completion(.success(body.accessToken))
-					} catch {
-						completion(.failure(.decodeError))
-					}
-			}
-		}.resume()
 	}
 }

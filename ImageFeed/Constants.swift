@@ -8,9 +8,14 @@
 import Foundation
 
 enum Constants {
-	static let accessKey = KeysManager.shared.get("ACCESS_KEY") ?? ""
-	static let secretKey = KeysManager.shared.get("SECRET_KEY") ?? ""
+	static let accessKey = "KwON6OY_KKUCGDBh1Dj2OuT4e2S8BEhUV7mXHf1YeSs"
+	static let secretKey = "PMHkSs9RWBw91Yfb7HpHrL4aF5GRXUb53U_aN8eqGro"
 	static let accessScope = "public+read_user+write_likes"
-	static let redirectURI = KeysManager.shared.get("REDIRECT_URI") ?? ""
-	static let defaultBaseURL = URL(string: "https://api.unsplash.com/")!
+	static let redirectURI = "urn:ietf:wg:oauth:2.0:oob"
+	static let defaultBaseURL: URL = {
+		guard let url = URL(string: "https://api.unsplash.com/") else {
+			fatalError("Не удалось создать URL")
+		}
+		return url
+	}()
 }

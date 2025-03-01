@@ -18,6 +18,10 @@ final class OAuth2Service {
 
 	static let shared = OAuth2Service()
 
+	// MARK: - Private Properties
+
+	private let decoder = JSONDecoder()
+
 	// MARK: - Initializers
 
 	private init() {}
@@ -27,12 +31,12 @@ final class OAuth2Service {
 	func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, OAuth2Error>) -> Void) {
 		let request = makeOAuthTokenRequest(code: code)
 
-		URLSession.shared.data(for: request) { result in
+		URLSession.shared.data(for: request) { [weak self] result in
+			guard let self else { return }
 			switch result {
 				case .failure(let error):
 					completion(.failure(.networkError(error)))
 				case .success(let data):
-					let decoder = JSONDecoder()
 					decoder.keyDecodingStrategy = .convertFromSnakeCase
 					do {
 						let body = try decoder.decode(OAuthTokenResponseBody.self, from: data)

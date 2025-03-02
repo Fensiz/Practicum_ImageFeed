@@ -12,6 +12,12 @@ final class ImageListViewController: UIViewController {
 	// MARK: - IB Outlets
 
 	@IBOutlet weak private var tableView: UITableView!
+//	private let tableView: UITableView = {
+//		let tableView = UITableView(frame: .zero, style: .plain)
+//		tableView.register(ImageListCell.self, forCellReuseIdentifier: ImageListCell.reuseIdentifier)
+//		tableView.translatesAutoresizingMaskIntoConstraints = false
+//		return tableView
+//	}()
 
 	// MARK: - Private Properties
 
@@ -32,6 +38,13 @@ final class ImageListViewController: UIViewController {
 		tableView.delegate = self
 		tableView.dataSource = self
 		tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+//		view.addSubview(tableView)
+//		NSLayoutConstraint.activate([
+//			tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+//			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//			tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+//		])
 	}
 
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

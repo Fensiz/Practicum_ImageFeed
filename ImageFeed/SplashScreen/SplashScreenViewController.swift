@@ -6,13 +6,14 @@
 //
 
 import UIKit
+import SwiftKeychainWrapper
 
 class SplashScreenViewController: UIViewController {
 
 	// MARK: - Private Properties
 
 	private let authenticationScreenSegueId = "showAuthenticationScreenSegue"
-	private lazy var storageService = OAuth2TokenStorage.shared
+	private let profileService = ProfileService.shared
 
 	// MARK: - Overrides Methods
 
@@ -24,8 +25,8 @@ class SplashScreenViewController: UIViewController {
 	// MARK: - Private Methods
 
 	private func navigateToNextScreen() {
-		if let _ = storageService.token {
-			switchToTabBarController()
+		if let token = KeychainWrapper.standard.string(forKey: "Auth token") {
+			fetchProfile(with: token)
 		} else {
 			performSegue(withIdentifier: authenticationScreenSegueId, sender: nil)
 		}
@@ -51,9 +52,13 @@ extension SplashScreenViewController {
 
 extension SplashScreenViewController: AuthViewControllerDelegate {
 	func didAuthenticate(_ vc: AuthViewController, with token: String) {
-		storageService.token = token
-		dismiss(animated: true)
-		switchToTabBarController()
+		let isSuccess = KeychainWrapper.standard.set(token, forKey: "Auth token")
+		guard isSuccess else {
+			fatalError("Не удалось записать токен в Keychain")
+		}
+//		storageService.token = token
+		vc.dismiss(animated: true)
+		fetchProfile(with: token)
 	}
 
 	private func switchToTabBarController() {
@@ -69,5 +74,26 @@ extension SplashScreenViewController: AuthViewControllerDelegate {
 
 		// Установим в `rootViewController` полученный контроллер
 		window.rootViewController = tabBarController
+	}
+
+	private func fetchProfile(with token: String) {
+		UIBlockingProgressHUD.show()
+		profileService.fetchProfile(token) { [weak self] result in
+			UIBlockingProgressHUD.dismiss()
+
+			guard let self = self else { return }
+
+			switch result {
+				case .success(let token):
+					print("TOKEN>>>>>>", token)
+					self.switchToTabBarController()
+
+
+				case .failure(let error):
+					// TODO [Sprint 11] Покажите ошибку получения профиля
+					print("ERROR>>>>>", error.localizedDescription)
+					break
+			}
+		}
 	}
 }

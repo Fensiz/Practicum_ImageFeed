@@ -8,17 +8,21 @@
 import Foundation
 
 extension URLSession {
-	enum NetworkError: Error {
-		case httpStatusCode(Int)
-		case urlRequestError(Error)
-		case urlSessionError
-	}
+//	enum NetworkError: Error {
+//		case httpStatusCode(Int)
+//		case urlRequestError(Error)
+//		case urlSessionError
+//		case decodingError(Data, Error)
+//	}
 	
 	func data(
 		for request: URLRequest,
-		completion: @escaping (Result<Data, NetworkError>) -> Void
+		completion: @escaping (Result<Data, ServiceError>) -> Void
 	) -> URLSessionTask {
-		let fulfillCompletionOnTheMainThread: (Result<Data, NetworkError>) -> Void = { result in
+		let fulfillCompletionOnTheMainThread: (Result<Data, ServiceError>) -> Void = { result in
+			if case let .failure(error) = result {
+				ServiceError.log(error: error)
+			}
 			DispatchQueue.main.async {
 				completion(result)
 			}
@@ -42,6 +46,30 @@ extension URLSession {
 			}
 		})
 
+		return task
+	}
+}
+
+extension URLSession {
+	func objectTask<T: Decodable>(
+		for request: URLRequest,
+		completion: @escaping (Result<T, ServiceError>) -> Void
+	) -> URLSessionTask {
+		let decoder = JSONDecoder()
+		decoder.keyDecodingStrategy = .convertFromSnakeCase
+		let task = data(for: request) { result in
+			switch result {
+				case .success(let data):
+					do {
+						let decodedData: T = try decoder.decode(T.self, from: data)
+						completion(.success(decodedData))
+					} catch {
+						completion(.failure(.decodingError(data, error)))
+					}
+				case .failure(let error):
+					completion(.failure(error))
+			}
+		}
 		return task
 	}
 }

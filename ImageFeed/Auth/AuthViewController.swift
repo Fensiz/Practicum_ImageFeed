@@ -34,29 +34,34 @@ final class AuthViewController: UIViewController {
 		}
 	}
 }
-
+import ProgressHUD
 extension AuthViewController: WebViewViewControllerDelegate {
 	func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+		vc.dismiss(animated: true)
+
+		UIBlockingProgressHUD.show()
+
 		oauthService.fetchOAuthToken(code) { [weak self] result in
+			UIBlockingProgressHUD.dismiss()
+			guard let self else { return }
 			switch result {
 				case .success(let token):
-					guard let self else { return }
 					self.delegate?.didAuthenticate(self, with: token)
 				case .failure(let error):
 					print(error.localizedDescription)
-					vc.dismiss(animated: true)
+
 					let alert = UIAlertController(
-						title: "Ошибка",
-						message: "Ошибка получения токена",
+						title: "Что-то пошло не так",
+						message: "Не удалось войти в систему",
 						preferredStyle: .alert
 					)
 					alert.addAction(UIAlertAction(title: "OK", style: .default))
-					self?.present(alert, animated: true)
+					self.present(alert, animated: true)
 			}
 		}
 	}
 
 	func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-		dismiss(animated: true)
+		vc.dismiss(animated: true)
 	}
 }

@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Kingfisher
+import SwiftKeychainWrapper
 
 final class ProfileViewController: UIViewController {
 
@@ -61,10 +63,12 @@ final class ProfileViewController: UIViewController {
 
 	// MARK: - Properties
 	// в будущем зададим через init()
-	private let avatarImageName: String = "avatar"
-	private let userName: String = "Екатерина Новикова"
-	private let userLogin: String = "@ekaterina_nov"
-	private let userDescription: String = "Hello, world!"
+	private var avatarImageName: String = "avatar"
+	private var userName: String = "Екатерина Новикова"
+	private var userLogin: String = "@ekaterina_nov"
+	private var userDescription: String = "Hello, world!"
+	private let profileService = ProfileService.shared
+	private var profileImageServiceObserver: NSObjectProtocol?
 
 	// MARK: - Lifecycle
 
@@ -73,6 +77,32 @@ final class ProfileViewController: UIViewController {
 		setupView()
 		setupConstraints()
 		configureViews()
+
+		profileImageServiceObserver = NotificationCenter.default
+			.addObserver(
+				forName: ProfileImageService.didChangeNotification,
+				object: nil,
+				queue: .main
+			) { [weak self] _ in
+				guard let self = self else { return }
+				self.updateAvatar()
+			}
+		updateAvatar()
+	}
+	private func updateAvatar() {
+		guard
+			let profileImageURL = ProfileImageService.shared.avatarURL,
+			let url = URL(string: profileImageURL)
+		else { return }
+		let processor = ResizingImageProcessor(referenceSize: CGSize(width: 70, height: 70), mode: .aspectFit)
+			|> RoundCornerImageProcessor(cornerRadius: 35)
+		avatarView.kf.setImage(
+			with: url,
+			placeholder: UIImage(systemName: "person.crop.circle")?.withTintColor(.ypGrey),
+			options: [.processor(processor)]
+		)
+
+
 	}
 
 	// MARK: - Setup Methods
@@ -107,10 +137,10 @@ final class ProfileViewController: UIViewController {
 	// MARK: - Configure Views
 
 	private func configureViews() {
-		avatarView.image = UIImage(named: avatarImageName) ?? UIImage(systemName: "person.circle")
-		nameView.text = userName
-		loginNameView.text = userLogin
-		descriptionView.text = userDescription
+		avatarView.image = UIImage(named: avatarImageName)
+		nameView.text = profileService.profile?.name
+		loginNameView.text = profileService.profile?.loginName
+		descriptionView.text = profileService.profile?.bio
 	}
 
 	private func switchToSplashScreenController() {
@@ -131,6 +161,7 @@ final class ProfileViewController: UIViewController {
 	// MARK: - Actions
 
 	@objc private func didTapLogoutButton() {
+		KeychainWrapper.standard.removeObject(forKey: "Auth token")
 		OAuth2TokenStorage.shared.token = nil
 		dismiss(animated: true)
 		switchToSplashScreenController()

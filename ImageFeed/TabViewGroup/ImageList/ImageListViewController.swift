@@ -9,15 +9,14 @@ import UIKit
 
 final class ImageListViewController: UIViewController {
 
-	// MARK: - IB Outlets
+	// MARK: - UI Elements
 
-	@IBOutlet weak private var tableView: UITableView!
-//	private let tableView: UITableView = {
-//		let tableView = UITableView(frame: .zero, style: .plain)
-//		tableView.register(ImageListCell.self, forCellReuseIdentifier: ImageListCell.reuseIdentifier)
-//		tableView.translatesAutoresizingMaskIntoConstraints = false
-//		return tableView
-//	}()
+	private let tableView: UITableView = {
+		let tableView = UITableView(frame: .zero, style: .plain)
+		tableView.register(ImageListCell.self)
+		tableView.translatesAutoresizingMaskIntoConstraints = false
+		return tableView
+	}()
 
 	// MARK: - Private Properties
 
@@ -38,32 +37,20 @@ final class ImageListViewController: UIViewController {
 		tableView.delegate = self
 		tableView.dataSource = self
 		tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-//		view.addSubview(tableView)
-//		NSLayoutConstraint.activate([
-//			tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-//			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//			tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-//		])
-	}
-
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		if segue.identifier == showSingleImageSegueIdentifier {
-			guard
-				let viewController = segue.destination as? SingleImageViewController,
-				let indexPath = sender as? IndexPath
-			else {
-				assertionFailure("Invalid segue destination")
-				return
-			}
-
-			let image = UIImage(named: photos[indexPath.row].name)
-			viewController.image = image
-		} else {
-			super.prepare(for: segue, sender: sender)
-		}
+		view.backgroundColor = .ypBlack
+		tableView.backgroundColor = .ypBlack
+		tableView.separatorStyle = .none
+		view.addSubview(tableView)
+		NSLayoutConstraint.activate([
+			tableView.topAnchor.constraint(equalTo: view.topAnchor),
+			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+			tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+		])
 	}
 }
+
+// MARK: - DataSource
 
 extension ImageListViewController: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -71,10 +58,7 @@ extension ImageListViewController: UITableViewDataSource {
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		guard let imageListCell = tableView.dequeueReusableCell(
-			withIdentifier: ImageListCell.reuseIdentifier,
-			for: indexPath
-		) as? ImageListCell else {
+		guard let imageListCell = tableView.reuse(ImageListCell.self, indexPath) else {
 			return UITableViewCell()
 		}
 
@@ -89,13 +73,20 @@ extension ImageListViewController: UITableViewDataSource {
 	}
 }
 
+// MARK: - Delegate
+
 extension ImageListViewController: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		guard let image = UIImage(named: photos[indexPath.row].name) else {
 			return 0
 		}
 
-		let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
+		let imageInsets = UIEdgeInsets(
+			top: UIConstants.smallOffset / 2,
+			left: UIConstants.offset,
+			bottom: UIConstants.smallOffset / 2,
+			right: UIConstants.offset
+		)
 		let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
 		let imageWidth = image.size.width
 		let scale = imageViewWidth / imageWidth
@@ -104,7 +95,10 @@ extension ImageListViewController: UITableViewDelegate {
 	}
 
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		performSegue(withIdentifier: "ShowSingleImage", sender: indexPath)
+		let vc = SingleImageViewController()
+		vc.image = UIImage(named: photos[indexPath.row].name) ?? UIImage()
+		vc.modalPresentationStyle = .fullScreen
+		present(vc, animated: true)
 	}
 }
 

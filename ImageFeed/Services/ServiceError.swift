@@ -20,9 +20,9 @@ enum ServiceError: Error {
 
 	static func log(
 		error: ServiceError,
+		file: String = #file,
 		line: UInt = #line,
-		function: String = #function,
-		file: String = (#file as NSString).lastPathComponent
+		function: String = #function
 	) {
 		var message = "<нет информации>"
 
@@ -46,7 +46,7 @@ enum ServiceError: Error {
 			case .invalidRequest:
 				message = "Выполнен запрос с предыдущим кодом"
 		}
-		print("[\(file) - \(function) - Line \(line)] Ошибка: \(message)")
+		print("[\((file as NSString).lastPathComponent) - \(function) - Line \(line)] Ошибка: \(message)")
 	}
 }
 

@@ -8,13 +8,6 @@
 import Foundation
 
 extension URLSession {
-//	enum NetworkError: Error {
-//		case httpStatusCode(Int)
-//		case urlRequestError(Error)
-//		case urlSessionError
-//		case decodingError(Data, Error)
-//	}
-	
 	func data(
 		for request: URLRequest,
 		completion: @escaping (Result<Data, ServiceError>) -> Void

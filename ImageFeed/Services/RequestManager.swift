@@ -7,8 +7,6 @@
 
 import Foundation
 
-// MARK: - RequestManager
-
 enum RequestManager {
 	static func createApiRequest(
 		with token: String?,

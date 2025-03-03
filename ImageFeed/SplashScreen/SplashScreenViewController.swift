@@ -12,13 +12,13 @@ class SplashScreenViewController: UIViewController {
 
 	// MARK: - Private Properties
 
-	private let authenticationScreenSegueId = "showAuthenticationScreenSegue"
 	private let profileService = ProfileService.shared
 
 	// MARK: - Overrides Methods
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
+		view.backgroundColor = .ypBlack
 		navigateToNextScreen()
 	}
 
@@ -28,24 +28,11 @@ class SplashScreenViewController: UIViewController {
 		if let token = KeychainWrapper.standard.string(forKey: "Auth token") {
 			fetchProfile(with: token)
 		} else {
-			performSegue(withIdentifier: authenticationScreenSegueId, sender: nil)
-		}
-	}
-}
-
-extension SplashScreenViewController {
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		if segue.identifier == authenticationScreenSegueId {
-			guard
-				let navigationController = segue.destination as? UINavigationController,
-				let viewController = navigationController.viewControllers[0] as? AuthViewController
-			else {
-				assertionFailure("Failed to prepare for \(authenticationScreenSegueId)")
-				return
-			}
-			viewController.delegate = self
-		} else {
-			super.prepare(for: segue, sender: sender)
+			let authVC = AuthViewController()
+			authVC.delegate = self
+			let navVC = UINavigationController(rootViewController: authVC)
+			navVC.modalPresentationStyle = .fullScreen
+			present(navVC, animated: true)
 		}
 	}
 }
@@ -56,9 +43,7 @@ extension SplashScreenViewController: AuthViewControllerDelegate {
 		guard isSuccess else {
 			fatalError("Не удалось записать токен в Keychain")
 		}
-//		storageService.token = token
 		vc.dismiss(animated: true)
-		fetchProfile(with: token)
 	}
 
 	private func switchToTabBarController() {
@@ -68,12 +53,8 @@ extension SplashScreenViewController: AuthViewControllerDelegate {
 			return
 		}
 
-		// Создаём экземпляр нужного контроллера из Storyboard с помощью ранее заданного идентификатора
-		let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-			.instantiateViewController(withIdentifier: "TabBarViewController")
-
-		// Установим в `rootViewController` полученный контроллер
-		window.rootViewController = tabBarController
+		let tabBarVC = TabBarController()
+		window.rootViewController = tabBarVC
 	}
 
 	private func fetchProfile(with token: String) {
@@ -84,14 +65,19 @@ extension SplashScreenViewController: AuthViewControllerDelegate {
 			guard let self = self else { return }
 
 			switch result {
-				case .success(let token):
-					print("TOKEN>>>>>>", token)
+				case .success(_):
 					self.switchToTabBarController()
 
-
 				case .failure(let error):
-					// TODO [Sprint 11] Покажите ошибку получения профиля
-					print("ERROR>>>>>", error.localizedDescription)
+					ServiceError.log(error: error)
+
+					let alert = UIAlertController(
+						title: "Что-то пошло не так",
+						message: "Не удалось получить профиль",
+						preferredStyle: .alert
+					)
+					alert.addAction(UIAlertAction(title: "OK", style: .default))
+					self.present(alert, animated: true)
 					break
 			}
 		}

@@ -16,22 +16,3 @@ struct UserResult: Decodable {
 struct ProfileImage: Decodable {
 	let small, medium, large: String
 }
-
-//struct Badge: Decodable {
-//	let title: String?
-//	let primary: Bool
-//	let slug: String?
-//	let link: String?
-//}
-//
-//struct Links: Decodable {
-//	let `self`: String?
-//	let html: String?
-//	let photos: String?
-//	let likes: String?
-//	let portfolio: String?
-//}
-//
-//struct Social: Decodable {
-//	let instagramUsername, portfolioURL, twitterUsername: String?
-//}

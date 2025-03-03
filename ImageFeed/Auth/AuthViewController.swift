@@ -6,8 +6,30 @@
 //
 
 import UIKit
+import ProgressHUD
 
 final class AuthViewController: UIViewController {
+
+	// MARK: - UI Elements
+
+	private lazy var loginButton = {
+		let button = UIButton()
+		button.setTitle("Войти", for: .normal)
+		button.backgroundColor = .white
+		button.setTitleColor(.ypBlack, for: .normal)
+		button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
+		button.layer.cornerRadius = UIConstants.cornerRadius
+		let action = UIAction { _ in
+			self.loginButtonTapped()
+		}
+		button.addAction(action, for: .touchUpInside)
+		return button
+	}()
+
+	private let logoImageView = {
+		let imageView = UIImageView(image: UIConstants.imageUnsplashLogo)
+		return imageView
+	}()
 
 	// MARK: - Public Properties
 
@@ -20,21 +42,36 @@ final class AuthViewController: UIViewController {
 
 	// MARK: - Overrides Methods
 
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		if segue.identifier == showWebViewSegueIdentifier {
-			guard
-				let webViewViewController = segue.destination as? WebViewViewController
-			else {
-				assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
-				return
-			}
-			webViewViewController.delegate = self
-		} else {
-			super.prepare(for: segue, sender: sender)
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		
+		view.backgroundColor = .ypBlack
+		[loginButton, logoImageView].forEach { view in
+			view.translatesAutoresizingMaskIntoConstraints = false
+			self.view.addSubview(view)
 		}
+
+		NSLayoutConstraint.activate([
+			logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			logoImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+
+			loginButton.heightAnchor.constraint(equalToConstant: 48),
+			loginButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: UIConstants.offset),
+			loginButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -UIConstants.offset),
+			loginButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -90),
+		])
+	}
+
+	// MARK: - Private Methods
+
+	private func loginButtonTapped() {
+		let webViewVC = WebViewViewController()
+		webViewVC.delegate = self
+		webViewVC.modalPresentationStyle = .fullScreen
+		self.present(webViewVC, animated: true)
 	}
 }
-import ProgressHUD
+
 extension AuthViewController: WebViewViewControllerDelegate {
 	func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
 		vc.dismiss(animated: true)
@@ -48,8 +85,8 @@ extension AuthViewController: WebViewViewControllerDelegate {
 				case .success(let token):
 					self.delegate?.didAuthenticate(self, with: token)
 				case .failure(let error):
-					print(error.localizedDescription)
-
+					ServiceError.log(error: error)
+					
 					let alert = UIAlertController(
 						title: "Что-то пошло не так",
 						message: "Не удалось войти в систему",

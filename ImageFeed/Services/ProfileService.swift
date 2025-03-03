@@ -8,17 +8,21 @@
 import Foundation
 
 final class ProfileService {
-	static let shared = ProfileService()
-	private let decoder = {
-		let decoder = JSONDecoder()
-		decoder.keyDecodingStrategy = .convertFromSnakeCase
-		return decoder
-	}()
 
+	// MARK: - Public Properties
+
+	static let shared = ProfileService()
+
+	// MARK: - Initializers
+	
 	private init() {}
 
+	// MARK: - Private Properties
+	
 	private(set) var profile: Profile?
 	private var task: URLSessionTask?
+
+	// MARK: - Public Methods
 
 	func fetchProfile(_ token: String, completion: @escaping (Result<Profile, ServiceError>) -> Void) {
 		let urlRequest: URLRequest

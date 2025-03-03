@@ -8,7 +8,14 @@
 import Foundation
 
 final class ProfileImageService {
+
+	// MARK: - Public Properties
+
+	static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
 	static let shared = ProfileImageService()
+
+	// MARK: - Initializers
+
 	private init() {}
 	
 	// MARK: - Private Properties
@@ -16,7 +23,7 @@ final class ProfileImageService {
 	private var task: URLSessionTask?
 	private(set) var avatarURL: String?
 
-	static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+	// MARK: - Public Methods
 
 	func fetchProfileImageURL(
 		for username: String,

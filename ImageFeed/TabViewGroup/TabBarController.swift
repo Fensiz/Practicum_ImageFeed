@@ -14,7 +14,6 @@ final class TabBarController: UITabBarController {
 		view.backgroundColor = .ypBlack
 		view.tintColor = .white
 
-//		tabBarController?.tabBar.barTintColor = .ypBlack
 		let appearance = UITabBarAppearance()
 		appearance.configureWithDefaultBackground()
 		appearance.backgroundColor = .ypBlack

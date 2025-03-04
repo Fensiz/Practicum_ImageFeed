@@ -7,7 +7,6 @@
 
 import UIKit
 import Kingfisher
-import SwiftKeychainWrapper
 
 final class ProfileViewController: UIViewController {
 
@@ -155,7 +154,7 @@ final class ProfileViewController: UIViewController {
 	// MARK: - Actions
 
 	private func didTapLogoutButton() {
-		KeychainWrapper.standard.removeObject(forKey: "Auth token")
+		OAuth2TokenStorage.shared.token = nil
 		dismiss(animated: true)
 		switchToSplashScreenController()
 	}

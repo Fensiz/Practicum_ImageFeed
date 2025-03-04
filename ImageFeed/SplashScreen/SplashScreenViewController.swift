@@ -6,13 +6,13 @@
 //
 
 import UIKit
-import SwiftKeychainWrapper
 
 class SplashScreenViewController: UIViewController {
 
 	// MARK: - Private Properties
 
 	private let profileService = ProfileService.shared
+	private let tokenStorage = OAuth2TokenStorage.shared
 
 	// MARK: - Overrides Methods
 
@@ -25,7 +25,7 @@ class SplashScreenViewController: UIViewController {
 	// MARK: - Private Methods
 
 	private func navigateToNextScreen() {
-		if let token = KeychainWrapper.standard.string(forKey: "Auth token") {
+		if let token = tokenStorage.token {
 			fetchProfile(with: token)
 		} else {
 			let authVC = AuthViewController()
@@ -39,10 +39,7 @@ class SplashScreenViewController: UIViewController {
 
 extension SplashScreenViewController: AuthViewControllerDelegate {
 	func didAuthenticate(_ vc: AuthViewController, with token: String) {
-		let isSuccess = KeychainWrapper.standard.set(token, forKey: "Auth token")
-		guard isSuccess else {
-			fatalError("Не удалось записать токен в Keychain")
-		}
+		tokenStorage.token = token
 		vc.dismiss(animated: true)
 	}
 

@@ -26,8 +26,8 @@ final class ImageListCell: UITableViewCell {
 
 		button.imageView?.contentMode = .scaleAspectFit
 
-		let action = UIAction { _ in
-			self.likeButtonTapped()
+		let action = UIAction { [weak self] _ in
+			self?.likeButtonTapped()
 		}
 		button.addAction(action, for: .touchUpInside)
 		return button

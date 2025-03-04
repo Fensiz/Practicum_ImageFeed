@@ -18,8 +18,8 @@ final class WebViewViewController: UIViewController {
 	private lazy var backButton = {
 		let button = UIButton()
 		button.setImage(UIConstants.imageBack, for: .normal)
-		let action = UIAction { _ in
-			self.dismiss(animated: true)
+		let action = UIAction { [weak self] _ in
+			self?.dismiss(animated: true)
 		}
 		button.addAction(action, for: .touchUpInside)
 		button.tintColor = .ypBlack

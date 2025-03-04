@@ -23,8 +23,8 @@ final class SingleImageViewController: UIViewController {
 	private lazy var backButton = {
 		let button = UIButton()
 		button.setImage(UIConstants.imageBack, for: .normal)
-		let action = UIAction { _ in
-			self.dismiss(animated: true)
+		let action = UIAction { [weak self] _ in
+			self?.dismiss(animated: true)
 		}
 		button.addAction(action, for: .touchUpInside)
 		button.tintColor = .white
@@ -34,8 +34,8 @@ final class SingleImageViewController: UIViewController {
 	private lazy var shareButton = {
 		let button = UIButton()
 		button.setImage(UIConstants.imageShare, for: .normal)
-		let action = UIAction { _ in
-			self.shareButtonAction(button)
+		let action = UIAction { [weak self] _ in
+			self?.shareButtonAction(button)
 		}
 		button.addAction(action, for: .touchUpInside)
 		return button

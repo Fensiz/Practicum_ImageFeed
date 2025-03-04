@@ -51,8 +51,8 @@ final class ProfileViewController: UIViewController {
 		let button = UIButton(type: .system)
 		button.setImage(UIImage(named: "exit"), for: .normal)
 		button.tintColor = .ypRed
-		let action = UIAction { _ in
-			self.didTapLogoutButton()
+		let action = UIAction { [weak self] _ in
+			self?.didTapLogoutButton()
 		}
 		button.addAction(action, for: .touchUpInside)
 		return button

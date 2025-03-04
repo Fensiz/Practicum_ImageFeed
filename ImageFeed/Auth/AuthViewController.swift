@@ -19,8 +19,8 @@ final class AuthViewController: UIViewController {
 		button.setTitleColor(.ypBlack, for: .normal)
 		button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
 		button.layer.cornerRadius = UIConstants.cornerRadius
-		let action = UIAction { _ in
-			self.loginButtonTapped()
+		let action = UIAction { [weak self] _ in
+			self?.loginButtonTapped()
 		}
 		button.addAction(action, for: .touchUpInside)
 		return button

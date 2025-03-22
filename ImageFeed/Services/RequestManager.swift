@@ -29,7 +29,7 @@ enum RequestManager {
 			return .failure(.invalidURL)
 		}
 		return RequestBuilder(baseURL: url)
-			.setPath("/oauth/token")
+			.setPath("oauth/token")
 			.addQueryItem(name: "client_id", value: Constants.accessKey)
 			.addQueryItem(name: "client_secret", value: Constants.secretKey)
 			.addQueryItem(name: "redirect_uri", value: Constants.redirectURI)

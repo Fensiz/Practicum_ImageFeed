@@ -154,7 +154,7 @@ final class ProfileViewController: UIViewController {
 	// MARK: - Actions
 
 	private func didTapLogoutButton() {
-		OAuth2TokenStorage.shared.token = nil
+		ProfileLogoutService.shared.logout()
 		dismiss(animated: true)
 		switchToSplashScreenController()
 	}

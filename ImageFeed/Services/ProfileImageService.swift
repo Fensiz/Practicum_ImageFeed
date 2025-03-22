@@ -31,7 +31,7 @@ final class ProfileImageService {
 		_ completion: @escaping (Result<String, ServiceError>) -> Void
 	) {
 		let urlRequest: URLRequest
-		let result = RequestManager.createApiRequest(with: token, for: "users/\(username)")
+		let result = RequestManager.getUser(username, with: token)
 		switch result {
 			case .success(let request):
 				urlRequest = request

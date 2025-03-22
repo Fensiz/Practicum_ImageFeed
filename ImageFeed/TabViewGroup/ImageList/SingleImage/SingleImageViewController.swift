@@ -82,21 +82,39 @@ final class SingleImageViewController: UIViewController {
 			shareButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
 		])
-
-		guard let image else { return }
-		imageView.kf.setImage(with: URL(string: image.largeImageURL), completionHandler: { result in
-			 switch result {
-			 case .success(let value):
-					 self.imageView.frame.size = image.size
-					 self.rescaleAndCenterImageInScrollView(image: value.image)
-			 case .failure(let error):
-				 print("Ошибка загрузки: \(error.localizedDescription)")
-			 }
-		 })
+		setImage()
 	}
 
 	// MARK: - Private Methods
-	
+
+	private func setImage() {
+		guard let image else { return }
+		UIBlockingProgressHUD.show()
+		imageView.kf.setImage(with: URL(string: image.largeImageURL), completionHandler: { [weak self] result in
+			UIBlockingProgressHUD.dismiss()
+			guard let self else { return }
+			DispatchQueue.main.async {
+				switch result {
+					case .success(let value):
+						self.imageView.frame.size = image.size
+						self.rescaleAndCenterImageInScrollView(image: value.image)
+					case .failure(_):
+						self.showError()
+				}
+			}
+		})
+	}
+
+	private func showError() {
+		let alert = UIAlertController(title: "Что-то пошло не так...", message: "Попробовать ещё раз?", preferredStyle: .alert)
+		alert.addAction(UIAlertAction(title: "Не надо", style: .default))
+		alert.addAction(UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
+			self?.setImage()
+		})
+
+		self.present(alert, animated: true)
+	}
+
 	private func shareButtonAction(_ sender: UIButton) {
 		guard let image = imageView.image else { return }
 		let activityVC = UIActivityViewController(activityItems: [image], applicationActivities: nil)

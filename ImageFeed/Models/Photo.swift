@@ -16,13 +16,31 @@ struct Photo: Decodable {
 	let largeImageURL: String
 	let isLiked: Bool
 
+	init(
+		id: String,
+		size: CGSize,
+		createdAt: Date?,
+		welcomeDescription: String?,
+		thumbImageURL: String,
+		largeImageURL: String,
+		isLiked: Bool
+	) {
+		self.id = id
+		self.size = size
+		self.createdAt = createdAt
+		self.welcomeDescription = welcomeDescription
+		self.thumbImageURL = thumbImageURL
+		self.largeImageURL = largeImageURL
+		self.isLiked = isLiked
+	}
+
 	init(_ photo: PhotoResult) {
 		id = photo.id
 		size = CGSize(width: CGFloat(photo.width), height: CGFloat(photo.height))
 		createdAt = ISO8601DateFormatter().date(from: photo.createdAt)
 		welcomeDescription = photo.description
 		thumbImageURL = photo.urls.small
-		largeImageURL = photo.urls.raw
+		largeImageURL = photo.urls.full
 		isLiked = photo.likedByUser
 	}
 }
@@ -38,6 +56,6 @@ struct PhotoResult: Decodable {
 }
 
 struct URLs: Decodable {
-	let raw: String
+	let full: String
 	let small: String
 }

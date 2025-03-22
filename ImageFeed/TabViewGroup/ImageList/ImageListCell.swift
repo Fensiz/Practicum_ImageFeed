@@ -106,6 +106,7 @@ final class ImageListCell: UITableViewCell {
 	// MARK: - IB Actions
 
 	private func likeButtonTapped() {
+		print("TAP", delegate)
 		delegate?.didTapLikeButton(on: self)
 	}
 

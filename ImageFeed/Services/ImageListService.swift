@@ -33,7 +33,8 @@ final class ImageListService: ImageListServiceProtocol {
 			return
 		}
 		lastLoadedPage = (lastLoadedPage ?? 0) + 1
-		let result = RequestManager.createApiRequest(with: token, for: "photos", page: lastLoadedPage, perPage: 10)
+		let result = RequestManager.getPhotos(with: token, page: lastLoadedPage, perPage: 10)
+//		createApiRequest(with: token, for: "photos", page: lastLoadedPage, perPage: 10)
 		switch result {
 			case .success(let request):
 				urlRequest = request
@@ -58,5 +59,43 @@ final class ImageListService: ImageListServiceProtocol {
 		}
 
 		task?.resume()
+	}
+
+	func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, ServiceError>) -> Void) {
+
+		let request = isLike ? RequestManager.unlikePhoto(token: token, id: photoId) : RequestManager.likePhoto(token: token, id: photoId)
+
+		let urlRequest: URLRequest
+		switch request {
+			case .success(let request):
+				urlRequest = request
+			case .failure(let error):
+				ServiceError.log(error: error)
+				completion(.failure(error))
+				return
+		}
+		URLSession.shared.data(for: urlRequest) { [weak self] (result: Result<Data, ServiceError>) in
+			guard let self else { return }
+			switch result {
+				case .success(_):
+					if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+						let photo = self.photos[index]
+						let newPhoto = Photo(
+							id: photo.id,
+							size: photo.size,
+							createdAt: photo.createdAt,
+							welcomeDescription: photo.welcomeDescription,
+							thumbImageURL: photo.thumbImageURL,
+							largeImageURL: photo.largeImageURL,
+							isLiked: !photo.isLiked
+						)
+						self.photos[index] = newPhoto
+					}
+					completion(.success(()))
+				case .failure(let error):
+					ServiceError.log(error: error)
+					completion(.failure(error))
+			}
+		}.resume()
 	}
 }

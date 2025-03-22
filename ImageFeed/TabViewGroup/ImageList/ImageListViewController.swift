@@ -150,8 +150,25 @@ extension ImageListViewController: UITableViewDelegate {
 extension ImageListViewController: ImageListCellDelegate {
 	func didTapLikeButton(on cell: ImageListCell) {
 		if let indexPath = tableView.indexPath(for: cell) {
-//			imageService.photos[indexPath.row].isLiked.toggle()
-			tableView.reloadRows(at: [indexPath], with: .automatic)
+			let photo = photos[indexPath.row]
+			UIBlockingProgressHUD.show()
+			imageService.changeLike(photoId: photo.id, isLike: photo.isLiked) { [weak self] result in
+				switch result {
+					case .failure(let error):
+						print("Error: \(error)")
+						UIBlockingProgressHUD.dismiss()
+						let alert = UIAlertController(title: "Ошибка", message: error.localizedDescription, preferredStyle: .alert)
+						alert.addAction(UIAlertAction(title: "ОК", style: .default))
+
+						self?.present(alert, animated: true)
+					case .success:
+						DispatchQueue.main.async {
+							self?.photos = self?.imageService.photos ?? []
+							self?.tableView.reloadRows(at: [indexPath], with: .automatic)
+							UIBlockingProgressHUD.dismiss()
+						}
+				}
+			}
 		}
 	}
 }

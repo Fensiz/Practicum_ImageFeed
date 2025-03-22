@@ -11,7 +11,9 @@ enum RequestManager {
 	static func createApiRequest(
 		with token: String?,
 		for path: String,
-		using baseURL: URL = Constants.defaultBaseURL
+		using baseURL: URL = Constants.defaultBaseURL,
+		page: Int? = nil,
+		perPage: Int? = nil
 	) -> Result<URLRequest, ServiceError> {
 
 		guard let token else {
@@ -20,6 +22,13 @@ enum RequestManager {
 
 		var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
 		urlComponents?.path = "/\(path)"
+
+		if let page, let perPage {
+			urlComponents?.queryItems = [
+				URLQueryItem(name: "page", value: String(page)),
+				URLQueryItem(name: "per_page", value: String(perPage)),
+			]
+		}
 
 		guard let url = urlComponents?.url else {
 			return .failure(.invalidURL)
@@ -31,7 +40,7 @@ enum RequestManager {
 		return .success(request)
 	}
 
-	static func makeOAuthTokenRequest(with: String) -> Result<URLRequest, ServiceError> {
+	static func makeOAuthTokenRequest(with code: String) -> Result<URLRequest, ServiceError> {
 		guard let baseURL = URL(string: "https://unsplash.com") else {
 			return .failure(.invalidURL)
 		}
@@ -44,7 +53,7 @@ enum RequestManager {
 			URLQueryItem(name: "client_id", value: Constants.accessKey),
 			URLQueryItem(name: "client_secret", value: Constants.secretKey),
 			URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-			URLQueryItem(name: "code", value: with),
+			URLQueryItem(name: "code", value: code),
 			URLQueryItem(name: "grant_type", value: "authorization_code")
 		]
 

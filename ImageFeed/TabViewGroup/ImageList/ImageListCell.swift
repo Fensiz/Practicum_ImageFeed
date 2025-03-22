@@ -48,7 +48,7 @@ final class ImageListCell: UITableViewCell {
 
 	private var isLiked: Bool = false {
 		didSet {
-			likeButton.tintColor = isLiked ? .ypWhite50 : .ypRed
+			likeButton.tintColor = isLiked ? .ypRed : .ypWhite50
 		}
 	}
 
@@ -62,6 +62,14 @@ final class ImageListCell: UITableViewCell {
 
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
+	}
+
+	// MARK: - Overrided
+
+	override func prepareForReuse() {
+		super.prepareForReuse()
+
+		cellImage.kf.cancelDownloadTask()
 	}
 
 	// MARK: - Setup UI
@@ -103,8 +111,15 @@ final class ImageListCell: UITableViewCell {
 
 	// MARK: - Public Methods
 
-	func config(with image: UIImage?, dateText: String, isLiked: Bool) {
-		cellImage.image = image
+	func config(with image: URL?, dateText: String, isLiked: Bool) {
+		cellImage.contentMode = .center
+		cellImage.backgroundColor = .ypWhite50
+		cellImage.kf.indicatorType = .activity
+		cellImage.kf.setImage(with: image, placeholder: UIImage(named: "stub")) { [weak self] _ in
+			self?.cellImage.contentMode = .scaleAspectFill
+			self?.cellImage.kf.indicatorType = .none
+			self?.backgroundColor = .clear
+		}
 		dateLabel.text = dateText
 		self.isLiked = isLiked
 	}

@@ -12,7 +12,6 @@ final class ImageListService: ImageListServiceProtocol {
 	static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
 	private(set) var photos: [Photo] = [] {
 		didSet {
-			print(">>>>", photos.count)
 			NotificationCenter.default.post(name: ImageListService.didChangeNotification, object: nil)
 		}
 	}
@@ -22,19 +21,15 @@ final class ImageListService: ImageListServiceProtocol {
 	private var lastLoadedPage: Int?
 
 	func fetchPhotosNextPage(completion: @escaping (ServiceError?) -> Void) {
-		print("------>", lastLoadedPage)
 		let urlRequest: URLRequest
-		print("1")
 		guard let token else {
 			return
 		}
-		print("2")
 		if let _ = task {
 			return
 		}
 		lastLoadedPage = (lastLoadedPage ?? 0) + 1
 		let result = RequestManager.getPhotos(with: token, page: lastLoadedPage, perPage: 10)
-//		createApiRequest(with: token, for: "photos", page: lastLoadedPage, perPage: 10)
 		switch result {
 			case .success(let request):
 				urlRequest = request

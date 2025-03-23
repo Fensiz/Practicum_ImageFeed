@@ -90,12 +90,23 @@ final class SingleImageViewController: UIViewController {
 	private func setImage() {
 		guard let image else { return }
 		UIBlockingProgressHUD.show()
-		imageView.kf.setImage(with: URL(string: image.largeImageURL), completionHandler: { [weak self] result in
+		guard let stub = UIImage(named: "stub") else {
+			fatalError("Image missing")
+		}
+
+		imageView.image = stub //задаем, чтобы был правильный фрейм при расчете масштабирования
+		rescaleAndCenterImageInScrollView(image: stub, scale: 1)
+
+		imageView.kf.setImage(
+			with: URL(string: image.largeImageURL),
+			placeholder: stub,
+			completionHandler: { [weak self] result in
 			UIBlockingProgressHUD.dismiss()
 			guard let self else { return }
 			DispatchQueue.main.async {
 				switch result {
 					case .success(let value):
+						self.imageView.contentMode = .scaleAspectFit
 						self.imageView.frame.size = image.size
 						self.rescaleAndCenterImageInScrollView(image: value.image)
 					case .failure(_):
@@ -121,7 +132,7 @@ final class SingleImageViewController: UIViewController {
 		present(activityVC, animated: true, completion: nil)
 	}
 	
-	private func rescaleAndCenterImageInScrollView(image: UIImage) {
+	private func rescaleAndCenterImageInScrollView(image: UIImage, scale: CGFloat? = nil) {
 		view.layoutIfNeeded()
 
 		let scrollViewSize = scrollView.bounds.size
@@ -129,7 +140,11 @@ final class SingleImageViewController: UIViewController {
 
 		let widthScale = scrollViewSize.width / imageSize.width
 		let heightScale = scrollViewSize.height / imageSize.height
-		let minScale = min(widthScale, heightScale)
+		var minScale = min(widthScale, heightScale)
+
+		if let scale {
+			minScale = scale
+		}
 
 		scrollView.minimumZoomScale = minScale
 		scrollView.maximumZoomScale = 3.0

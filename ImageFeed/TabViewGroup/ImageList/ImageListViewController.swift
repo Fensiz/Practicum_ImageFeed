@@ -9,6 +9,10 @@ import UIKit
 
 final class ImageListViewController: UIViewController {
 
+	// MARK: - Public Properties
+
+	var photos: [Photo] = []
+
 	// MARK: - UI Elements
 
 	private let tableView: UITableView = {
@@ -22,18 +26,13 @@ final class ImageListViewController: UIViewController {
 
 	private let imageService: ImageListServiceProtocol = ImageListService()
 	private let showSingleImageSegueIdentifier = "ShowSingleImage"
-//	private var photos: [(name: String, isLiked: Bool)] = Array(0..<20).map{ ("\($0)", $0 % 2 == 0) }
-//	private let currentDate = Date()
 	private lazy var dateFormatter: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateStyle = .long
 		formatter.timeStyle = .none
 		return formatter
 	}()
-
 	private var imageServiceObserver: NSObjectProtocol?
-
-	var photos: [Photo] = []
 
 	// MARK: - Overrides Methods
 
@@ -62,10 +61,15 @@ final class ImageListViewController: UIViewController {
 				self.updateTableViewAnimated()
 			}
 		imageService.fetchPhotosNextPage { error in
-			if error == nil {
-
+			if let error {
+				let alertController = UIAlertController(
+					title: "Error",
+					message: error.localizedDescription,
+					preferredStyle: .alert
+				)
+				alertController.addAction(UIAlertAction(title: "OK", style: .default))
+				self.present(alertController, animated: true)
 			}
-			print("finish")
 		}
 	}
 
@@ -96,7 +100,6 @@ extension ImageListViewController: UITableViewDataSource {
 			return UITableViewCell()
 		}
 		let photo = photos[indexPath.row]
-		print("isLiked", photo.isLiked)
 		var dateText = "-"
 		if let date = photo.createdAt {
 			dateText = dateFormatter.string(from: date)
@@ -155,7 +158,7 @@ extension ImageListViewController: ImageListCellDelegate {
 			imageService.changeLike(photoId: photo.id, isLike: photo.isLiked) { [weak self] result in
 				switch result {
 					case .failure(let error):
-						print("Error: \(error)")
+						ServiceError.log(error: error)
 						UIBlockingProgressHUD.dismiss()
 						let alert = UIAlertController(title: "Ошибка", message: error.localizedDescription, preferredStyle: .alert)
 						alert.addAction(UIAlertAction(title: "ОК", style: .default))

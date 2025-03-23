@@ -9,10 +9,34 @@ import UIKit
 @preconcurrency import WebKit
 
 final class WebViewViewController: UIViewController {
-
 	enum WebViewConstants {
 		static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
 	}
+
+	// MARK: - UI Elements
+
+	private lazy var backButton = {
+		let button = UIButton()
+		button.setImage(UIConstants.imageBack, for: .normal)
+		let action = UIAction { [weak self] _ in
+			self?.dismiss(animated: true)
+		}
+		button.addAction(action, for: .touchUpInside)
+		button.tintColor = .ypBlack
+		return button
+	}()
+
+	private let progressView = {
+		let progressBar = UIProgressView()
+		progressBar.tintColor = .ypBlack
+		return progressBar
+	}()
+
+	private let webView = {
+		let webView = WKWebView()
+
+		return webView
+	}()
 
 	// MARK: - Public Properties
 
@@ -20,47 +44,45 @@ final class WebViewViewController: UIViewController {
 
 	// MARK: - Private Properties
 
-	@IBOutlet private weak var progressView: UIProgressView!
-	@IBOutlet private weak var webView: WKWebView!
+	private var estimatedProgressObservation: NSKeyValueObservation?
 
 	// MARK: - Overrides Methods
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		view.backgroundColor = .white
+		[backButton, webView, progressView].forEach { view in
+			view.translatesAutoresizingMaskIntoConstraints = false
+			self.view.addSubview(view)
+		}
+		NSLayoutConstraint.activate([
+			backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+			backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+			backButton.widthAnchor.constraint(equalToConstant: UIConstants.elementSize),
+			backButton.heightAnchor.constraint(equalToConstant: UIConstants.elementSize),
+			
+			progressView.topAnchor.constraint(equalTo: backButton.bottomAnchor),
+			progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+			progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
+			webView.topAnchor.constraint(equalTo: backButton.bottomAnchor),
+			webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+			webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+			webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+		])
+		estimatedProgressObservation = webView.observe(\.estimatedProgress) { [weak self] _, _ in
+			self?.updateProgress()
+		}
 		webView.navigationDelegate = self
 		loadAuthView()
 	}
 
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		webView.addObserver(
-			self,
-			forKeyPath: #keyPath(WKWebView.estimatedProgress),
-			options: .new,
-			context: nil)
-		updateProgress()
-	}
+	// MARK: - Private Methods
 
-	override func viewWillDisappear(_ animated: Bool) {
-		super.viewWillDisappear(animated)
-		webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
-	}
-
-	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-		if keyPath == #keyPath(WKWebView.estimatedProgress) {
-			updateProgress()
-		} else {
-			super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-		}
-	}
-
-	// MARK: - IB Actions
-
-	@IBAction private func backButtonTapped(_ sender: Any) {
+	private func backButtonTapped() {
 		delegate?.webViewViewControllerDidCancel(self)
 	}
-
-	// MARK: - Private Methods
 
 	private func updateProgress() {
 		progressView.progress = Float(webView.estimatedProgress)

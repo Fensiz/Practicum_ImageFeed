@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
 
@@ -13,7 +14,6 @@ final class ProfileViewController: UIViewController {
 
 	private let avatarView: UIImageView = {
 		let imageView = UIImageView()
-		imageView.translatesAutoresizingMaskIntoConstraints = false
 		imageView.contentMode = .scaleAspectFit
 		return imageView
 	}()
@@ -22,7 +22,6 @@ final class ProfileViewController: UIViewController {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 23, weight: .semibold)
 		label.textColor = .white
-		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
 
@@ -30,7 +29,6 @@ final class ProfileViewController: UIViewController {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 13, weight: .regular)
 		label.textColor = .ypGrey
-		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
 
@@ -38,7 +36,6 @@ final class ProfileViewController: UIViewController {
 		let label = UILabel()
 		label.font = .systemFont(ofSize: 13, weight: .regular)
 		label.textColor = .white
-		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
 
@@ -46,7 +43,6 @@ final class ProfileViewController: UIViewController {
 		let stackView = UIStackView(arrangedSubviews: [nameView, loginNameView, descriptionView])
 		stackView.axis = .vertical
 		stackView.spacing = 8
-		stackView.translatesAutoresizingMaskIntoConstraints = false
 		return stackView
 	}()
 
@@ -54,17 +50,21 @@ final class ProfileViewController: UIViewController {
 		let button = UIButton(type: .system)
 		button.setImage(UIImage(named: "exit"), for: .normal)
 		button.tintColor = .ypRed
-		button.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
-		button.translatesAutoresizingMaskIntoConstraints = false
+		let action = UIAction { [weak self] _ in
+			self?.didTapLogoutButton()
+		}
+		button.addAction(action, for: .touchUpInside)
 		return button
 	}()
 
 	// MARK: - Properties
-	// в будущем зададим через init()
-	private let avatarImageName: String = "avatar"
-	private let userName: String = "Екатерина Новикова"
-	private let userLogin: String = "@ekaterina_nov"
-	private let userDescription: String = "Hello, world!"
+
+	private var avatarImageName: String = "avatar"
+	private var userName: String?
+	private var userLogin: String?
+	private var userDescription: String?
+	private let profileService = ProfileService.shared
+	private var profileImageServiceObserver: NSObjectProtocol?
 
 	// MARK: - Lifecycle
 
@@ -73,44 +73,69 @@ final class ProfileViewController: UIViewController {
 		setupView()
 		setupConstraints()
 		configureViews()
+
+		profileImageServiceObserver = NotificationCenter.default
+			.addObserver(
+				forName: ProfileImageService.didChangeNotification,
+				object: nil,
+				queue: .main
+			) { [weak self] _ in
+				guard let self = self else { return }
+				self.updateAvatar()
+			}
+		updateAvatar()
 	}
 
 	// MARK: - Setup Methods
 
+	private func updateAvatar() {
+		guard
+			let profileImageURL = ProfileImageService.shared.avatarURL,
+			let url = URL(string: profileImageURL)
+		else { return }
+		let processor = ResizingImageProcessor(referenceSize: CGSize(width: 70, height: 70), mode: .aspectFit)
+		|> RoundCornerImageProcessor(cornerRadius: 35)
+		avatarView.kf.setImage(
+			with: url,
+			placeholder: UIImage(systemName: "person.crop.circle")?.withTintColor(.ypGrey),
+			options: [.processor(processor)]
+		)
+		avatarView.layer.masksToBounds = true
+		avatarView.layer.cornerRadius = 35
+	}
+
 	private func setupView() {
 		view.backgroundColor = .ypBlack
-		view.addSubview(avatarView)
-		view.addSubview(stackView)
-		view.addSubview(logoutButton)
+		[avatarView, stackView, logoutButton].forEach { view in
+			view.translatesAutoresizingMaskIntoConstraints = false
+			self.view.addSubview(view)
+		}
 	}
 
 	private func setupConstraints() {
 		NSLayoutConstraint.activate([
-			// Аватар
 			avatarView.widthAnchor.constraint(equalToConstant: 70),
 			avatarView.heightAnchor.constraint(equalToConstant: 70),
-			avatarView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+			avatarView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: UIConstants.offset),
 			avatarView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
 
-			// StackView (имя, логин, описание)
 			stackView.leadingAnchor.constraint(equalTo: avatarView.leadingAnchor),
-			stackView.topAnchor.constraint(equalTo: avatarView.bottomAnchor, constant: 8),
+			stackView.topAnchor.constraint(equalTo: avatarView.bottomAnchor, constant: UIConstants.smallOffset),
 
-			// Кнопка выхода
 			logoutButton.centerYAnchor.constraint(equalTo: avatarView.centerYAnchor),
-			logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-			logoutButton.widthAnchor.constraint(equalToConstant: 44),
-			logoutButton.heightAnchor.constraint(equalToConstant: 44)
+			logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -UIConstants.offset),
+			logoutButton.widthAnchor.constraint(equalToConstant: UIConstants.elementSize),
+			logoutButton.heightAnchor.constraint(equalToConstant: UIConstants.elementSize),
 		])
 	}
 
 	// MARK: - Configure Views
 
 	private func configureViews() {
-		avatarView.image = UIImage(named: avatarImageName) ?? UIImage(systemName: "person.circle")
-		nameView.text = userName
-		loginNameView.text = userLogin
-		descriptionView.text = userDescription
+		avatarView.image = UIImage(named: avatarImageName)
+		nameView.text = profileService.profile?.name
+		loginNameView.text = profileService.profile?.loginName
+		descriptionView.text = profileService.profile?.bio
 	}
 
 	private func switchToSplashScreenController() {
@@ -120,9 +145,7 @@ final class ProfileViewController: UIViewController {
 			return
 		}
 
-		// Создаём экземпляр нужного контроллера из Storyboard с помощью ранее заданного идентификатора
-		let splashScreenController = UIStoryboard(name: "Main", bundle: .main)
-			.instantiateViewController(withIdentifier: "SplashScreenViewController")
+		let splashScreenController = SplashScreenViewController()
 
 		// Установим в `rootViewController` полученный контроллер
 		window.rootViewController = splashScreenController
@@ -130,7 +153,7 @@ final class ProfileViewController: UIViewController {
 
 	// MARK: - Actions
 
-	@objc private func didTapLogoutButton() {
+	private func didTapLogoutButton() {
 		OAuth2TokenStorage.shared.token = nil
 		dismiss(animated: true)
 		switchToSplashScreenController()

@@ -11,7 +11,7 @@ final class ProfileImageService {
 
 	// MARK: - Public Properties
 
-	static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+	static let didChangeNotification = Notification.Name("ProfileImageProviderDidChange")
 	static let shared = ProfileImageService()
 
 	// MARK: - Initializers

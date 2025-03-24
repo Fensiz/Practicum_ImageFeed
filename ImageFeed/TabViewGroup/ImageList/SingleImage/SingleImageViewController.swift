@@ -90,9 +90,7 @@ final class SingleImageViewController: UIViewController {
 	private func setImage() {
 		guard let image else { return }
 		UIBlockingProgressHUD.show()
-		guard let stub = UIImage(named: "stub") else {
-			fatalError("Image missing")
-		}
+		let stub = UIImage(named: "stub") ?? UIImage()
 
 		imageView.image = stub //задаем, чтобы был правильный фрейм при расчете масштабирования
 		rescaleAndCenterImageInScrollView(image: stub, scale: 1)

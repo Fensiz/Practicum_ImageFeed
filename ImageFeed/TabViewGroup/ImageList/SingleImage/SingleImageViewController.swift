@@ -50,7 +50,7 @@ final class SingleImageViewController: UIViewController {
 
 	// MARK: - Public Properties
 
-	var image: UIImage?
+	var image: Photo?
 
 	// MARK: - Overrides Methods
 
@@ -82,40 +82,72 @@ final class SingleImageViewController: UIViewController {
 			shareButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 
 		])
-		scrollView.minimumZoomScale = 0.1
-		scrollView.maximumZoomScale = 1.25
-
-		guard let image else { return }
-		imageView.image = image
-		imageView.frame.size = image.size
-		rescaleAndCenterImageInScrollView(image: image)
-	}
-
-	// MARK: - IB Actions
-
-	@IBAction private func didTapBackButton() {
-		dismiss(animated: true, completion: nil)
+		setImage()
 	}
 
 	// MARK: - Private Methods
-	
-	private func shareButtonAction(_ sender: UIButton) {
+
+	private func setImage() {
 		guard let image else { return }
+		UIBlockingProgressHUD.show()
+		let stub = UIImage(named: "stub") ?? UIImage()
+
+		imageView.image = stub //задаем, чтобы был правильный фрейм при расчете масштабирования
+		rescaleAndCenterImageInScrollView(image: stub, scale: 1)
+
+		imageView.kf.setImage(
+			with: URL(string: image.largeImageURL),
+			placeholder: stub,
+			completionHandler: { [weak self] result in
+			UIBlockingProgressHUD.dismiss()
+			guard let self else { return }
+			DispatchQueue.main.async {
+				switch result {
+					case .success(let value):
+						self.imageView.contentMode = .scaleAspectFit
+						self.imageView.frame.size = image.size
+						self.rescaleAndCenterImageInScrollView(image: value.image)
+					case .failure(_):
+						self.showError()
+				}
+			}
+		})
+	}
+
+	private func showError() {
+		let alert = UIAlertController(title: "Что-то пошло не так...", message: "Попробовать ещё раз?", preferredStyle: .alert)
+		alert.addAction(UIAlertAction(title: "Не надо", style: .default))
+		alert.addAction(UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
+			self?.setImage()
+		})
+
+		self.present(alert, animated: true)
+	}
+
+	private func shareButtonAction(_ sender: UIButton) {
+		guard let image = imageView.image else { return }
 		let activityVC = UIActivityViewController(activityItems: [image], applicationActivities: nil)
 		present(activityVC, animated: true, completion: nil)
 	}
 	
-	private func rescaleAndCenterImageInScrollView(image: UIImage) {
-		let minZoomScale = scrollView.minimumZoomScale
-		let maxZoomScale = scrollView.maximumZoomScale
+	private func rescaleAndCenterImageInScrollView(image: UIImage, scale: CGFloat? = nil) {
 		view.layoutIfNeeded()
-		let visibleRectSize = scrollView.bounds.size
+
+		let scrollViewSize = scrollView.bounds.size
 		let imageSize = image.size
-		let hScale = (imageSize.width > 0) ? visibleRectSize.width / imageSize.width : 0
-		let vScale = (imageSize.height > 0) ? visibleRectSize.height / imageSize.height : 0
-		let scale = min(maxZoomScale, max(minZoomScale, min(hScale, vScale)))
-		scrollView.setZoomScale(scale, animated: false)
-		scrollView.layoutIfNeeded()
+
+		let widthScale = scrollViewSize.width / imageSize.width
+		let heightScale = scrollViewSize.height / imageSize.height
+		var minScale = min(widthScale, heightScale)
+
+		if let scale {
+			minScale = scale
+		}
+
+		scrollView.minimumZoomScale = minScale
+		scrollView.maximumZoomScale = 3.0
+		scrollView.setZoomScale(minScale, animated: false)
+
 		updateContentInsets()
 	}
 

@@ -26,7 +26,7 @@ final class ProfileService {
 
 	func fetchProfile(_ token: String, completion: @escaping (Result<Profile, ServiceError>) -> Void) {
 		let urlRequest: URLRequest
-		let result = RequestManager.createApiRequest(with: token, for: "me")
+		let result = RequestManager.getProfile(with: token)
 		switch result {
 			case .success(let request):
 				urlRequest = request

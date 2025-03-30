@@ -51,6 +51,7 @@ final class ImageListCell: UITableViewCell {
 			likeButton.tintColor = isLiked ? .ypRed : .ypWhite50
 		}
 	}
+	private var layers: Set<CALayer> = []
 
 	// MARK: - Init
 
@@ -70,6 +71,10 @@ final class ImageListCell: UITableViewCell {
 		super.prepareForReuse()
 
 		cellImage.kf.cancelDownloadTask()
+		layers.forEach { layer in
+			layer.removeFromSuperlayer()
+		}
+		layers.removeAll()
 	}
 
 	// MARK: - Setup UI
@@ -114,11 +119,37 @@ final class ImageListCell: UITableViewCell {
 	func config(with image: URL?, dateText: String, isLiked: Bool) {
 		cellImage.contentMode = .center
 		cellImage.backgroundColor = .ypWhite50
+
+		let stubLayer = CALayer()
+		if let stubImage = UIImage(named: "stub") {
+			let stubSize = stubImage.size
+			stubLayer.contents = stubImage.cgImage
+			stubLayer.bounds = CGRect(origin: .zero, size: stubSize)
+		}
+
+		let gradientLayer = Animations.loadingGradient()
+		gradientLayer.frame = bounds
+
+		cellImage.layer.addSublayer(stubLayer)
+		layers.insert(stubLayer)
+		cellImage.layer.addSublayer(gradientLayer)
+		layers.insert(gradientLayer)
+
+		// Вызываем перед установкой позиции
+		cellImage.layoutIfNeeded()
+		stubLayer.position = CGPoint(x: cellImage.bounds.midX, y: bounds.midY)
+
+		cellImage.layer.addSublayer(gradientLayer)
+		cellImage.layer.addSublayer(stubLayer)
 		cellImage.kf.indicatorType = .activity
-		cellImage.kf.setImage(with: image, placeholder: UIImage(named: "stub")) { [weak self] _ in
+		cellImage.kf.setImage(with: image) { [weak self] _ in
 			self?.cellImage.contentMode = .scaleAspectFill
 			self?.cellImage.kf.indicatorType = .none
 			self?.backgroundColor = .clear
+			self?.layers.forEach { layer in
+				layer.removeFromSuperlayer()
+			}
+			self?.layers.removeAll()
 		}
 		dateLabel.text = dateText
 		self.isLiked = isLiked

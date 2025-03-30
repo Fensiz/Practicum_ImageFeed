@@ -59,6 +59,7 @@ final class ProfileViewController: UIViewController {
 
 	// MARK: - Properties
 
+	private var animations: Set<CALayer> = []
 	private var avatarImageName: String = "avatar"
 	private var userName: String?
 	private var userLogin: String?
@@ -73,6 +74,15 @@ final class ProfileViewController: UIViewController {
 		setupView()
 		setupConstraints()
 		configureViews()
+
+		[avatarView, nameView, loginNameView, descriptionView].forEach { view in
+			view.layoutIfNeeded()
+			let layer = Animations.loadingGradient()
+			layer.cornerRadius = view.frame.height / 2
+			layer.frame = view.bounds
+			view.layer.addSublayer(layer)
+			animations.insert(layer)
+		}
 
 		profileImageServiceObserver = NotificationCenter.default
 			.addObserver(
@@ -98,8 +108,12 @@ final class ProfileViewController: UIViewController {
 		avatarView.kf.setImage(
 			with: url,
 			placeholder: UIImage(systemName: "person.crop.circle")?.withTintColor(.ypGrey),
-			options: [.processor(processor)]
-		)
+			options: [.processor(processor)]) { [weak self] result in
+				self?.animations.forEach { layer in
+					layer.removeFromSuperlayer()
+				}
+				self?.animations.removeAll()
+			}
 		avatarView.layer.masksToBounds = true
 		avatarView.layer.cornerRadius = 35
 	}

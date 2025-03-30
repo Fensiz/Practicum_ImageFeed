@@ -60,11 +60,9 @@ final class ProfileViewController: UIViewController {
 	// MARK: - Properties
 
 	private var animations: Set<CALayer> = []
-	private var avatarImageName: String = "avatar"
-	private var userName: String?
-	private var userLogin: String?
-	private var userDescription: String?
+	private var avatarAnumation: CALayer?
 	private let profileService = ProfileService.shared
+	private var profileServiceObserver: NSObjectProtocol?
 	private var profileImageServiceObserver: NSObjectProtocol?
 
 	// MARK: - Lifecycle
@@ -81,9 +79,22 @@ final class ProfileViewController: UIViewController {
 			layer.cornerRadius = view.frame.height / 2
 			layer.frame = view.bounds
 			view.layer.addSublayer(layer)
-			animations.insert(layer)
+			if view == avatarView {
+				avatarAnumation = layer
+			} else {
+				animations.insert(layer)
+			}
 		}
+		profileServiceObserver = NotificationCenter.default
+			.addObserver(
+				forName: ProfileService.didChangeNotification,
+				object: nil,
+				queue: .main
+			) { [weak self] _ in
+				guard let self = self else { return }
+				self.configureViews()
 
+			}
 		profileImageServiceObserver = NotificationCenter.default
 			.addObserver(
 				forName: ProfileImageService.didChangeNotification,
@@ -93,7 +104,11 @@ final class ProfileViewController: UIViewController {
 				guard let self = self else { return }
 				self.updateAvatar()
 			}
-		updateAvatar()
+	}
+
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		configureViews()
 	}
 
 	// MARK: - Setup Methods
@@ -109,10 +124,8 @@ final class ProfileViewController: UIViewController {
 			with: url,
 			placeholder: UIImage(systemName: "person.crop.circle")?.withTintColor(.ypGrey),
 			options: [.processor(processor)]) { [weak self] result in
-				self?.animations.forEach { layer in
-					layer.removeFromSuperlayer()
-				}
-				self?.animations.removeAll()
+				self?.avatarAnumation?.removeFromSuperlayer()
+				self?.avatarAnumation = nil
 			}
 		avatarView.layer.masksToBounds = true
 		avatarView.layer.cornerRadius = 35
@@ -146,10 +159,19 @@ final class ProfileViewController: UIViewController {
 	// MARK: - Configure Views
 
 	private func configureViews() {
-		avatarView.image = UIImage(named: avatarImageName)
-		nameView.text = profileService.profile?.name
-		loginNameView.text = profileService.profile?.loginName
-		descriptionView.text = profileService.profile?.bio
+		nameView.text = profileService.profile?.name ?? " Dummy Dummy"
+		loginNameView.text = profileService.profile?.loginName ?? " Dummy"
+		descriptionView.text = profileService.profile?.bio ?? " Dummy description"
+		if profileService.profile != nil {
+			removeAnimations()
+		}
+	}
+
+	private func removeAnimations() {
+		animations.forEach { layer in
+			layer.removeFromSuperlayer()
+		}
+		animations.removeAll()
 	}
 
 	private func switchToSplashScreenController() {

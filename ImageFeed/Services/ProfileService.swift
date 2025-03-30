@@ -12,6 +12,7 @@ final class ProfileService {
 	// MARK: - Public Properties
 
 	static let shared = ProfileService()
+	static let didChangeNotification = Notification.Name("ProfileProviderDidChange")
 
 	// MARK: - Initializers
 	
@@ -46,6 +47,10 @@ final class ProfileService {
 					self?.profile = profile
 					ProfileImageService.shared.fetchProfileImageURL(for: profileResult.username, with: token) { _ in
 					}
+					NotificationCenter.default.post(
+						name: ProfileService.didChangeNotification,
+						object: self
+					)
 					completion(.success(profile))
 				case .failure(let error):
 					ServiceError.log(error: error)

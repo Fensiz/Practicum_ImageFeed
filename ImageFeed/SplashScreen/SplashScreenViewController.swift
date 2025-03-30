@@ -27,6 +27,7 @@ class SplashScreenViewController: UIViewController {
 	private func navigateToNextScreen() {
 		if let token = tokenStorage.token {
 			fetchProfile(with: token)
+			switchToTabBarController()
 		} else {
 			let authVC = AuthViewController()
 			authVC.delegate = self
@@ -55,15 +56,13 @@ extension SplashScreenViewController: AuthViewControllerDelegate {
 	}
 
 	private func fetchProfile(with token: String) {
-		UIBlockingProgressHUD.show()
 		profileService.fetchProfile(token) { [weak self] result in
-			UIBlockingProgressHUD.dismiss()
 
 			guard let self = self else { return }
 
 			switch result {
 				case .success(_):
-					self.switchToTabBarController()
+					break
 
 				case .failure(let error):
 					ServiceError.log(error: error)

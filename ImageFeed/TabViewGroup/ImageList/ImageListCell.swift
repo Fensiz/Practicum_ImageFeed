@@ -115,10 +115,12 @@ final class ImageListCell: UITableViewCell {
 		cellImage.contentMode = .center
 		cellImage.backgroundColor = .ypWhite50
 		cellImage.kf.indicatorType = .activity
-		cellImage.kf.setImage(with: image, placeholder: UIImage(named: "stub")) { [weak self] _ in
-			self?.cellImage.contentMode = .scaleAspectFill
-			self?.cellImage.kf.indicatorType = .none
-			self?.backgroundColor = .clear
+		cellImage.kf.setImage(with: image, placeholder: UIImage(named: "stub")) { [weak self] result in
+			if case .success(_) = result {
+				self?.cellImage.contentMode = .scaleAspectFill
+				self?.cellImage.kf.indicatorType = .none
+				self?.backgroundColor = .clear
+			}
 		}
 		dateLabel.text = dateText
 		self.isLiked = isLiked

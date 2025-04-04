@@ -122,7 +122,7 @@ final class ProfileViewController: UIViewController {
 		|> RoundCornerImageProcessor(cornerRadius: 35)
 		avatarView.kf.setImage(
 			with: url,
-			placeholder: UIImage(systemName: "person.crop.circle")?.withTintColor(.ypGrey),
+			//placeholder: UIImage(systemName: "person.crop.circle")?.withTintColor(.ypGrey),
 			options: [.processor(processor)]) { [weak self] result in
 				self?.avatarAnumation?.removeFromSuperlayer()
 				self?.avatarAnumation = nil
@@ -164,6 +164,10 @@ final class ProfileViewController: UIViewController {
 		descriptionView.text = profileService.profile?.bio ?? " Dummy description"
 		if profileService.profile != nil {
 			removeAnimations()
+		}
+		if avatarView.image != nil {
+			avatarAnumation?.removeFromSuperlayer()
+			avatarAnumation = nil
 		}
 	}
 

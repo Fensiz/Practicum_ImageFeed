@@ -54,6 +54,7 @@ final class ProfileViewController: UIViewController {
 			self?.didTapLogoutButton()
 		}
 		button.addAction(action, for: .touchUpInside)
+		button.accessibilityIdentifier = "LogoutButton"
 		return button
 	}()
 

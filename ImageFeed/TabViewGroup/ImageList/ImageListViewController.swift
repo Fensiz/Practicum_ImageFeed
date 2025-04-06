@@ -19,6 +19,7 @@ final class ImageListViewController: UIViewController {
 		let tableView = UITableView(frame: .zero, style: .plain)
 		tableView.register(ImageListCell.self)
 		tableView.translatesAutoresizingMaskIntoConstraints = false
+		tableView.accessibilityIdentifier = "ImageListTableView"
 		return tableView
 	}()
 

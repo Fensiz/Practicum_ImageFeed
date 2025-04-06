@@ -31,7 +31,7 @@ final class WebViewViewController: UIViewController {
 
 	private let webView = {
 		let webView = WKWebView()
-
+		webView.accessibilityIdentifier = "UnsplashWebView"
 		return webView
 	}()
 
@@ -59,9 +59,6 @@ final class WebViewViewController: UIViewController {
 			self.presenter?.didUpdateProgressValue(self.webView.estimatedProgress)
 		}
 		webView.navigationDelegate = self
-		let authHelper = AuthHelper()
-		presenter = WebViewPresenter(authHelper: authHelper)
-		presenter?.view = self
 		presenter?.viewDidLoad()
 	}
 

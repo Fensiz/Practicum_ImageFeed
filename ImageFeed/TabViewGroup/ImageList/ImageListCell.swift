@@ -23,6 +23,7 @@ final class ImageListCell: UITableViewCell {
 		let originalImage = UIConstants.imageHeart
 		let resizedImage = originalImage?.resized(to: CGSize(width: 21, height: 18))
 		button.setImage(resizedImage?.withRenderingMode(.alwaysTemplate), for: .normal)
+		button.accessibilityIdentifier = "LikeButton"
 
 		button.imageView?.contentMode = .scaleAspectFit
 

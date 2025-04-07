@@ -12,7 +12,7 @@ extension Photo {
 	static let mock = Photo(
 		id: "mock_id",
 		size: CGSize(width: 200, height: 100),
-		createdAt: Date(),
+		createdAt: Date(timeIntervalSince1970: 0),
 		welcomeDescription: "Test description",
 		thumbImageURL: "https://example.com/thumb.jpg",
 		largeImageURL: "https://example.com/large.jpg",

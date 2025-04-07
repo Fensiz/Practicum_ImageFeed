@@ -8,7 +8,7 @@
 @testable import ImageFeed
 import Foundation
 
-class ProfileViewProtocolSpy: ProfileViewProtocol {
+final class ProfileViewControllerSpy: ProfileViewProtocol {
 	private(set) var updateProfileCalls = 0
 	private(set) var updateAvatarCalls = 0
 	private(set) var showLogoutConfirmationCalls = 0

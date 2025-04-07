@@ -77,7 +77,7 @@ extension ImageListPresenter: ImageListPresenterProtocol {
 		}
 	}
 
-	func config(cell: ImageListCell, at indexPath: IndexPath) {
+	func config(cell: ImageListCellProtocol, at indexPath: IndexPath) {
 		let photo = photos[indexPath.row]
 		let dateText = photo.createdAt.map { dateFormatter.string(from: $0) } ?? "-"
 		cell.config(with: URL(string: photo.thumbImageURL), dateText: dateText, isLiked: photo.isLiked)

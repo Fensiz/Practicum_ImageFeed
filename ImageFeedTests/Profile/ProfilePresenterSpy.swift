@@ -7,7 +7,7 @@
 
 @testable import ImageFeed
 
-class ProfilePresenterSpy: ProfilePresenterProtocol {
+final class ProfilePresenterSpy: ProfilePresenterProtocol {
 
 	var didTapLogoutCalled = false
 	var confirmLogoutCalled = false

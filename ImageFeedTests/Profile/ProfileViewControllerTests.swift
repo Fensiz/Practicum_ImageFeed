@@ -9,7 +9,7 @@ import XCTest
 @testable import ImageFeed
 import Kingfisher
 
-class ProfileViewControllerTests: XCTestCase {
+final class ProfileViewControllerTests: XCTestCase {
 	func test_switchToSplash_changesRootViewController() {
 		// Given
 		let sut = ProfileViewController()

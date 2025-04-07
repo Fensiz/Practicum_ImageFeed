@@ -47,6 +47,15 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				ImageFeedTests.swift,
+				ImageList/ImageListPresenterSpy.swift,
+				ImageList/ImageListViewControllerTests.swift,
+				"ImageList/Photo+Extensions.swift",
+				Profile/ProfilePresenterSpy.swift,
+				Profile/ProfilePresenterTests.swift,
+				Profile/ProfileServiceSpy.swift,
+				Profile/ProfileViewControllerSpy.swift,
+				Profile/ProfileViewControllerTests.swift,
+				Profile/ProfileVIewProtocolSpy.swift,
 				WebViewPresenterSpy.swift,
 				WebViewViewControllerSpy.swift,
 			);

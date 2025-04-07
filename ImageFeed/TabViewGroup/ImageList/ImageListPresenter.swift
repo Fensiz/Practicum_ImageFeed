@@ -88,5 +88,3 @@ extension ImageListPresenter: ImageListPresenterProtocol {
 		return dateFormatter.string(from: date)
 	}
 }
-
-

@@ -45,7 +45,8 @@ final class AuthViewController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
+
+		view.accessibilityIdentifier = "AuthViewController"
 		view.backgroundColor = .ypBlack
 		[loginButton, logoImageView].forEach { view in
 			view.translatesAutoresizingMaskIntoConstraints = false

@@ -90,7 +90,7 @@ extension ImageListViewController: UITableViewDelegate {
 		let imageWidth = photo.size.width
 		let scale = imageViewWidth / imageWidth
 		let cellHeight = photo.size.height * scale + imageInsets.top + imageInsets.bottom
-		return cellHeight
+		return max(cellHeight, 0)
 	}
 
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

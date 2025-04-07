@@ -89,5 +89,7 @@ final class ImageFeedUITests: XCTestCase {
 		app.buttons["LogoutButton"].tap()
 
 		app.alerts["Пока, пока!"].scrollViews.otherElements.buttons["Да"].tap()
+
+		XCTAssertTrue(app.otherElements["AuthViewController"].waitForExistence(timeout: 5))
 	}
 }

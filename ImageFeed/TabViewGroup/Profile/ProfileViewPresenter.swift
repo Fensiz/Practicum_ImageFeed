@@ -9,12 +9,12 @@ import Foundation
 
 final class ProfilePresenter {
 	private weak var view: ProfileViewProtocol?
-	private let profileService: ProfileService
+	private let profileService: ProfileServiceProtocol
 	private let profileImageService: ProfileImageService
 	private var profileImageObserver: NSObjectProtocol?
 
 	init(view: ProfileViewProtocol,
-		 profileService: ProfileService = .shared,
+		 profileService: ProfileServiceProtocol = ProfileService.shared,
 		 profileImageService: ProfileImageService = .shared) {
 		self.view = view
 		self.profileService = profileService

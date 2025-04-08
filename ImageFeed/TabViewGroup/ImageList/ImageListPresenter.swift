@@ -50,6 +50,7 @@ extension ImageListPresenter: ImageListPresenterProtocol {
 	}
 
 	func willDisplayCell(at indexPath: IndexPath) {
+		guard ProcessInfo.processInfo.arguments.contains("UITEST") == false else { return }
 		if indexPath.row == photos.count - 1 {
 			imageService.fetchPhotosNextPage { _ in }
 		}

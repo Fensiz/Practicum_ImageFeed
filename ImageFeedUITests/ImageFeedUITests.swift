@@ -12,6 +12,9 @@ final class ImageFeedUITests: XCTestCase {
 
 	override func setUpWithError() throws {
 		continueAfterFailure = false
+		app.launchArguments = [
+			"UITEST"
+		]
 		app.launch()
 	}
 
@@ -29,15 +32,15 @@ final class ImageFeedUITests: XCTestCase {
 		loginTextField.typeText("simonov.ivan@inbox.ru")
 		let passwordTextField = webView.descendants(matching: .secureTextField).element
 		XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
-		sleep(2)
 		passwordTextField.tap()
-		passwordTextField.typeText("<password>")
+		sleep(5)
+		passwordTextField.typeText("muxbev-pomcu2-xYxxx")
 		sleep(2)
 		webView.buttons["Login"].tap()
 
 		let tablesQuery = app.tables
 		let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
-		XCTAssertTrue(cell.waitForExistence(timeout: 5))
+		XCTAssertTrue(cell.waitForExistence(timeout: 10))
 	}
 
 	func testFeed() throws {
@@ -47,7 +50,7 @@ final class ImageFeedUITests: XCTestCase {
 		let cell = table.cells.element(boundBy: 0)
 		XCTAssertTrue(cell.waitForExistence(timeout: 5), "Первая ячейка не загрузилась")
 
-		sleep(5)
+		sleep(12)
 
 		cell.swipeUp()
 

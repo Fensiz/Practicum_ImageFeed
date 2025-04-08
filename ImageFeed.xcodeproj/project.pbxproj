@@ -30,6 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F45038E72DA5B5C000642E96 /* ImageFeed.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = ImageFeed.xctestplan; sourceTree = "<group>"; };
 		F48DDC9A2D4223C700DB727F /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4BF59E32DA1866500A59216 /* ImageFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4BF5A5F2DA1B6CA00A59216 /* ImageFeedUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -122,6 +123,7 @@
 		F48DDC912D4223C700DB727F = {
 			isa = PBXGroup;
 			children = (
+				F45038E72DA5B5C000642E96 /* ImageFeed.xctestplan */,
 				F48DDC9C2D4223C700DB727F /* ImageFeed */,
 				F4BF59D72DA185A200A59216 /* ImageFeedTests */,
 				F4BF5A602DA1B6CA00A59216 /* ImageFeedUITests */,
@@ -559,6 +561,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.fensiz.ImageFeedUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -581,6 +584,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.fensiz.ImageFeedUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

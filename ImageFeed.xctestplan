@@ -1,0 +1,37 @@
+{
+  "configurations" : [
+    {
+      "id" : "08B0181F-13BD-4757-9FD7-056B8F54C561",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:ImageFeed.xcodeproj",
+      "identifier" : "F48DDC992D4223C700DB727F",
+      "name" : "ImageFeed"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:ImageFeed.xcodeproj",
+        "identifier" : "F4BF59E22DA1866500A59216",
+        "name" : "ImageFeedTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:ImageFeed.xcodeproj",
+        "identifier" : "F4BF5A5E2DA1B6CA00A59216",
+        "name" : "ImageFeedUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

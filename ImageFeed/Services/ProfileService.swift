@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class ProfileService {
+final class ProfileService: ProfileServiceProtocol {
 
 	// MARK: - Public Properties
 

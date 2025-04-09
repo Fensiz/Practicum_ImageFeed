@@ -28,6 +28,7 @@ final class SingleImageViewController: UIViewController {
 		}
 		button.addAction(action, for: .touchUpInside)
 		button.tintColor = .white
+		button.accessibilityIdentifier = AccessibilityIds.backButton
 		return button
 	}()
 

@@ -9,9 +9,6 @@ import UIKit
 @preconcurrency import WebKit
 
 final class WebViewViewController: UIViewController {
-	enum WebViewConstants {
-		static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
-	}
 
 	// MARK: - UI Elements
 
@@ -34,13 +31,14 @@ final class WebViewViewController: UIViewController {
 
 	private let webView = {
 		let webView = WKWebView()
-
+		webView.accessibilityIdentifier = AccessibilityIds.webWiew
 		return webView
 	}()
 
 	// MARK: - Public Properties
 
 	weak var delegate: WebViewViewControllerDelegate?
+	var presenter: WebViewPresenterProtocol?
 
 	// MARK: - Private Properties
 
@@ -55,27 +53,13 @@ final class WebViewViewController: UIViewController {
 			view.translatesAutoresizingMaskIntoConstraints = false
 			self.view.addSubview(view)
 		}
-		NSLayoutConstraint.activate([
-			backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
-			backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-			backButton.widthAnchor.constraint(equalToConstant: UIConstants.elementSize),
-			backButton.heightAnchor.constraint(equalToConstant: UIConstants.elementSize),
-			
-			progressView.topAnchor.constraint(equalTo: backButton.bottomAnchor),
-			progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-			progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-
-			webView.topAnchor.constraint(equalTo: backButton.bottomAnchor),
-			webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-			webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-			webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-
-		])
+		setupConstraints()
 		estimatedProgressObservation = webView.observe(\.estimatedProgress) { [weak self] _, _ in
-			self?.updateProgress()
+			guard let self else { return }
+			self.presenter?.didUpdateProgressValue(self.webView.estimatedProgress)
 		}
 		webView.navigationDelegate = self
-		loadAuthView()
+		presenter?.viewDidLoad()
 	}
 
 	// MARK: - Private Methods
@@ -84,43 +68,29 @@ final class WebViewViewController: UIViewController {
 		delegate?.webViewViewControllerDidCancel(self)
 	}
 
-	private func updateProgress() {
-		progressView.progress = Float(webView.estimatedProgress)
-		progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
-	}
-
-	private func loadAuthView() {
-		guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
-			return
-		}
-
-		urlComponents.queryItems = [
-			URLQueryItem(name: "client_id", value: Constants.accessKey),
-			URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-			URLQueryItem(name: "response_type", value: "code"),
-			URLQueryItem(name: "scope", value: Constants.accessScope)
-		]
-
-		guard let url = urlComponents.url else {
-			return
-		}
-
-		let request = URLRequest(url: url)
-		webView.load(request)
-	}
-
 	private func code(from navigationAction: WKNavigationAction) -> String? {
-		if
-			let url = navigationAction.request.url,
-			let urlComponents = URLComponents(string: url.absoluteString),
-			urlComponents.path == "/oauth/authorize/native",
-			let items = urlComponents.queryItems,
-			let codeItem = items.first(where: { $0.name == "code" })
-		{
-			return codeItem.value
-		} else {
-			return nil
+		if let url = navigationAction.request.url {
+			return presenter?.code(from: url)
 		}
+		return nil
+	}
+
+	private func setupConstraints() {
+		NSLayoutConstraint.activate([
+			backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+			backButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+			backButton.widthAnchor.constraint(equalToConstant: UIConstants.elementSize),
+			backButton.heightAnchor.constraint(equalToConstant: UIConstants.elementSize),
+
+			progressView.topAnchor.constraint(equalTo: backButton.bottomAnchor),
+			progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+			progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
+			webView.topAnchor.constraint(equalTo: backButton.bottomAnchor),
+			webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+			webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+			webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+		])
 	}
 }
 
@@ -136,5 +106,19 @@ extension WebViewViewController: WKNavigationDelegate {
 		} else {
 			decisionHandler(.allow)
 		}
+	}
+}
+
+extension WebViewViewController: WebViewViewControllerProtocol {
+	func setProgressValue(_ newValue: Float) {
+		progressView.progress = newValue
+	}
+	
+	func setProgressHidden(_ isHidden: Bool) {
+		progressView.isHidden = isHidden
+	}
+
+	func load(request: URLRequest) {
+		webView.load(request)
 	}
 }

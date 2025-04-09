@@ -22,6 +22,7 @@ final class AuthViewController: UIViewController {
 		let action = UIAction { [weak self] _ in
 			self?.loginButtonTapped()
 		}
+		button.accessibilityIdentifier = AccessibilityIds.loginButton
 		button.addAction(action, for: .touchUpInside)
 		return button
 	}()
@@ -44,7 +45,8 @@ final class AuthViewController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
+
+		view.accessibilityIdentifier = AccessibilityIds.authViewController
 		view.backgroundColor = .ypBlack
 		[loginButton, logoImageView].forEach { view in
 			view.translatesAutoresizingMaskIntoConstraints = false
@@ -67,6 +69,9 @@ final class AuthViewController: UIViewController {
 	private func loginButtonTapped() {
 		let webViewVC = WebViewViewController()
 		webViewVC.delegate = self
+		let authHelper = AuthHelper()
+		webViewVC.presenter = WebViewPresenter(authHelper: authHelper)
+		webViewVC.presenter?.view = webViewVC
 		webViewVC.modalPresentationStyle = .fullScreen
 		self.present(webViewVC, animated: true)
 	}

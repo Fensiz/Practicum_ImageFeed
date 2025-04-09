@@ -23,6 +23,7 @@ final class ImageListCell: UITableViewCell {
 		let originalImage = UIConstants.imageHeart
 		let resizedImage = originalImage?.resized(to: CGSize(width: 21, height: 18))
 		button.setImage(resizedImage?.withRenderingMode(.alwaysTemplate), for: .normal)
+		button.accessibilityIdentifier = AccessibilityIds.likeButton
 
 		button.imageView?.contentMode = .scaleAspectFit
 
@@ -115,10 +116,12 @@ final class ImageListCell: UITableViewCell {
 		cellImage.contentMode = .center
 		cellImage.backgroundColor = .ypWhite50
 		cellImage.kf.indicatorType = .activity
-		cellImage.kf.setImage(with: image, placeholder: UIImage(named: "stub")) { [weak self] _ in
-			self?.cellImage.contentMode = .scaleAspectFill
-			self?.cellImage.kf.indicatorType = .none
-			self?.backgroundColor = .clear
+		cellImage.kf.setImage(with: image, placeholder: UIImage(named: "stub")) { [weak self] result in
+			if case .success = result {
+				self?.cellImage.contentMode = .scaleAspectFill
+				self?.cellImage.kf.indicatorType = .none
+				self?.backgroundColor = .clear
+			}
 		}
 		dateLabel.text = dateText
 		self.isLiked = isLiked

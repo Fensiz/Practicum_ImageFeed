@@ -19,18 +19,26 @@ final class TabBarController: UITabBarController {
 		appearance.backgroundColor = .ypBlack
 		tabBar.standardAppearance = appearance
 
-		let imagesListViewController = ImageListViewController()
-		imagesListViewController.tabBarItem = UITabBarItem(
+		let imageListViewController = ImageListViewController()
+		let imageListPresenter = ImageListPresenter(view: imageListViewController)
+		imageListViewController.presenter = imageListPresenter
+
+		imageListViewController.tabBarItem = UITabBarItem(
 			title: "",
 			image: UIConstants.imageStack,
 			selectedImage: nil
 		)
+
 		let profileViewController = ProfileViewController()
+		let profilePresenter = ProfilePresenter(view: profileViewController)
+		profileViewController.presenter = profilePresenter
+
 		profileViewController.tabBarItem = UITabBarItem(
 			title: "",
 			image: UIConstants.imageProfile,
 			selectedImage: nil
 		)
-		self.viewControllers = [imagesListViewController, profileViewController]
+		
+		self.viewControllers = [imageListViewController, profileViewController]
 	}
 }

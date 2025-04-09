@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import ImageFeed
 
 final class ImageFeedUITests: XCTestCase {
 	private let app = XCUIApplication()
@@ -19,8 +20,8 @@ final class ImageFeedUITests: XCTestCase {
 	}
 
 	func testAuth() throws {
-		app.buttons["LoginButton"].tap()
-		let webView = app.webViews["UnsplashWebView"]
+		app.buttons[AccessibilityIds.loginButton].tap()
+		let webView = app.webViews[AccessibilityIds.webWiew]
 		guard webView.waitForExistence(timeout: 5) == true else {
 			XCTFail()
 			return
@@ -44,7 +45,7 @@ final class ImageFeedUITests: XCTestCase {
 	}
 
 	func testFeed() throws {
-		let table = app.tables["ImageListTableView"]
+		let table = app.tables[AccessibilityIds.imageListTableView]
 		XCTAssertTrue(table.waitForExistence(timeout: 5), "Таблица не появилась на экране")
 
 		let cell = table.cells.element(boundBy: 0)
@@ -58,11 +59,11 @@ final class ImageFeedUITests: XCTestCase {
 
 		// на симуляторе не работает, тк размеры ячейки и кнопки равны 0, не знаю почему
 
-		table.cells.element(boundBy: 1).buttons["LikeButton"].tap()
+		table.cells.element(boundBy: 1).buttons[AccessibilityIds.likeButton].tap()
 
 		sleep(2)
 
-		table.cells.element(boundBy: 1).buttons["LikeButton"].tap()
+		table.cells.element(boundBy: 1).buttons[AccessibilityIds.likeButton].tap()
 
 		sleep(2)
 
@@ -74,7 +75,7 @@ final class ImageFeedUITests: XCTestCase {
 		sleep(1)
 		bigImage.pinch(withScale: 0.5, velocity: -1)
 
-		let backButton = app.buttons["SingleImageViewBackButton"]
+		let backButton = app.buttons[AccessibilityIds.backButton]
 		backButton.tap()
 
 		sleep(1)
@@ -89,10 +90,10 @@ final class ImageFeedUITests: XCTestCase {
 		XCTAssertTrue(app.staticTexts["Ivan Simonov"].exists)
 		XCTAssertTrue(app.staticTexts["@fensiz"].exists)
 
-		app.buttons["LogoutButton"].tap()
+		app.buttons[AccessibilityIds.logoutButton].tap()
 
 		app.alerts["Пока, пока!"].scrollViews.otherElements.buttons["Да"].tap()
 
-		XCTAssertTrue(app.otherElements["AuthViewController"].waitForExistence(timeout: 5))
+		XCTAssertTrue(app.otherElements[AccessibilityIds.authViewController].waitForExistence(timeout: 5))
 	}
 }

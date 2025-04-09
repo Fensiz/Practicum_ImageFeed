@@ -15,7 +15,8 @@ enum Constants {
 	static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
 	static let defaultBaseURL: URL = {
 		guard let url = URL(string: "https://api.unsplash.com/") else {
-			fatalError("Не удалось создать URL")
+			assertionFailure("Не удалось создать URL")
+			return URL(fileURLWithPath: "")
 		}
 		return url
 	}()

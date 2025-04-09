@@ -99,7 +99,7 @@ final class ImageFeedTests: XCTestCase {
 		]
 
 		//when
-		let code = authHelper.code(from: urlComponents.url!)
+		let code = authHelper.getCode(from: urlComponents.url!)
 
 		//then
 		XCTAssertEqual(code, expectedCode)

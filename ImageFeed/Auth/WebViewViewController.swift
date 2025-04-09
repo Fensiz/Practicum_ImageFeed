@@ -31,7 +31,7 @@ final class WebViewViewController: UIViewController {
 
 	private let webView = {
 		let webView = WKWebView()
-		webView.accessibilityIdentifier = "UnsplashWebView"
+		webView.accessibilityIdentifier = AccessibilityIds.webWiew
 		return webView
 	}()
 

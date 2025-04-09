@@ -22,7 +22,7 @@ final class AuthViewController: UIViewController {
 		let action = UIAction { [weak self] _ in
 			self?.loginButtonTapped()
 		}
-		button.accessibilityIdentifier = "LoginButton"
+		button.accessibilityIdentifier = AccessibilityIds.loginButton
 		button.addAction(action, for: .touchUpInside)
 		return button
 	}()
@@ -46,7 +46,7 @@ final class AuthViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		view.accessibilityIdentifier = "AuthViewController"
+		view.accessibilityIdentifier = AccessibilityIds.authViewController
 		view.backgroundColor = .ypBlack
 		[loginButton, logoImageView].forEach { view in
 			view.translatesAutoresizingMaskIntoConstraints = false

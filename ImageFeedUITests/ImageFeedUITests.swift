@@ -6,7 +6,6 @@
 //
 
 import XCTest
-@testable import ImageFeed
 
 final class ImageFeedUITests: XCTestCase {
 	private let app = XCUIApplication()

@@ -37,6 +37,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F48B6F6A2DA6F03300712F13 /* Exceptions for "ImageFeed" folder in "ImageFeedUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Helpers/AccessibilityIds.swift,
+			);
+			target = F4BF5A5E2DA1B6CA00A59216 /* ImageFeedUITests */;
+		};
 		F48DDCAC2D4223C800DB727F /* Exceptions for "ImageFeed" folder in "ImageFeed" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -73,6 +80,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				F48DDCAC2D4223C800DB727F /* Exceptions for "ImageFeed" folder in "ImageFeed" target */,
+				F48B6F6A2DA6F03300712F13 /* Exceptions for "ImageFeed" folder in "ImageFeedUITests" target */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";
